@@ -22,7 +22,7 @@
           </div>
         </form>
         <el-button type="primary" @click="toManagement" style="margin:20px 30px 0 30px">登录</el-button>
-        <el-button type="primary" @click="toManagement" style="margin:20px 0 0 30px;">找回密码</el-button>
+        <el-button type="primary" @click="toGetPassword" style="margin:20px 0 0 30px;">找回密码</el-button>
         <router-view></router-view>
       </div>
     </div>
