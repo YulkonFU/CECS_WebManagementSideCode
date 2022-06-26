@@ -87,13 +87,13 @@ export default {
     }
   },
   created(){
-    this.axios.get("https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=76564418&appsecret=Lx8yZLGo&cityid=101130201")
-    .then(res=>{
-      console.log(res.data)
-      this.nowTmp=res.data.tem;
-      this.wea=res.data.wea;
-      this.week=res.data.week;
-    })
+    // this.axios.get("https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=76564418&appsecret=Lx8yZLGo&cityid=101130201")
+    // .then(res=>{
+    //   console.log(res.data)
+    //   this.nowTmp=res.data.tem;
+    //   this.wea=res.data.wea;
+    //   this.week=res.data.week;
+    // })
   },
   mounted() {
     this.getCurrentTime();
