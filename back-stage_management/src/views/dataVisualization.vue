@@ -61,6 +61,7 @@ export default {
     //饼图，包含各个事件的发生次数
     pieChart() {
       // 基于准备好的dom，初始化echarts实例
+      document.getElementById("pie").setAttribute('_echarts_instance_','')
       var myChart = echarts.init(document.getElementById("pie"), null, {
         width: 300,
         height: 300,
@@ -107,7 +108,7 @@ export default {
             },
           },
         ],
-      });
+      },true);
       //防抖
       let timer;
       window.onresize = function () {
@@ -121,6 +122,7 @@ export default {
     },
     //折线图，表示每天每个事件发生的次数
     lineChart() {
+      document.getElementById("line").setAttribute('_echarts_instance_','')
       // 基于准备好的dom，初始化echarts实例
       var myChart = echarts.init(document.getElementById("line"), null, {
         width: 300,
@@ -198,7 +200,7 @@ export default {
             data: [20, 15, 2, 10, 3, 5, 7],
           },
         ],
-      });
+      },true);
       //防抖
       let timer;
       window.onresize = function () {
@@ -211,6 +213,7 @@ export default {
       };
     },
     barChart() {
+      document.getElementById("bar").setAttribute('_echarts_instance_','')
       // 基于准备好的dom，初始化echarts实例
       var myChart = echarts.init(document.getElementById("bar"), null, {
         width: 300,
@@ -242,7 +245,18 @@ export default {
             axisTick: {
               alignWithLabel: true,
             },
+            axisLabel: {
+            // ***x轴 文字竖排显示***
+            // interval: 0,
+            // formatter: function (value) {
+            //   return value.split("").join("\n");
+            // },
+            //******x轴 文字倾斜***************
+            interval:0,
+            rotate:15
           },
+          },
+          
         ],
         yAxis: [
           {
@@ -257,7 +271,7 @@ export default {
             data: [10, 52, 200, 334, 390, 330, 220],
           },
         ],
-      });
+      },true);
       //防抖
       let timer;
       window.onresize = function () {
@@ -270,6 +284,7 @@ export default {
       };
     },
     sourceChart() {
+      document.getElementById("source").setAttribute('_echarts_instance_','')
       // 基于准备好的dom，初始化echarts实例
       var myChart = echarts.init(document.getElementById("source"), null, {
         width: 300,
@@ -328,7 +343,7 @@ export default {
             },
           },
         ],
-      });
+      },true);
       //防抖
       let timer;
       window.onresize = function () {

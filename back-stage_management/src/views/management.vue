@@ -43,11 +43,11 @@
                 src="../assets/yonghu.png"
                 style="width: 30px; height: 30px; margin-right: 15px"
                 alt=""
-              />yonghu</span
+              />{{username}}</span
             >
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="a">注销</el-dropdown-item>
+                <el-dropdown-item command="a" @click="loginOut">退出</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -79,21 +79,22 @@ export default {
   data(){
     return{
       menuIndex:0,//当前选择的菜单栏
-      menu:["综合态势","应急指挥","值班管理","事件管理"],
+      menu:["综合态势","应急指挥/资源调度","值班管理","事件管理"],
       nowTmp:0,//当前温度
       wea:"",//当前天气情况
       week:"",//当前星期几
-      nowTime:""//当前时间
+      nowTime:"",//当前时间
+      username:"用户名"
     }
   },
   created(){
-    // this.axios.get("https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=76564418&appsecret=Lx8yZLGo&cityid=101130201")
-    // .then(res=>{
-    //   console.log(res.data)
-    //   this.nowTmp=res.data.tem;
-    //   this.wea=res.data.wea;
-    //   this.week=res.data.week;
-    // })
+    this.axios.get("https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=76564418&appsecret=Lx8yZLGo&cityid=101130201")
+    .then(res=>{
+      console.log(res.data)
+      this.nowTmp=res.data.tem;
+      this.wea=res.data.wea;
+      this.week=res.data.week;
+    })
   },
   mounted() {
     this.getCurrentTime();
@@ -101,27 +102,30 @@ export default {
     setInterval(function () {
       that.getCurrentTime();
     }, 1000);
+    this.username=localStorage.getItem("username")
   },
   methods:{
+    //退出
+    loginOut(){
+      this.$router.push("/login")
+    },
     //综合态势
     toDataVisualization(){
       this.menuIndex=0;
-      console.log(this.menuIndex)
+      this.$router.push("/management/dataVisualization")
     },
     //应急指挥
     toEmergencyCommand(){
       this.menuIndex=1;
-      console.log(this.menuIndex)
+      this.$router.push("/management/emergencyCommand")
     },
     //值班管理
     toDutyManagement(){
       this.menuIndex=2;
-      console.log(this.menuIndex)
     },
     //事件管理
     toEventManagement(){
       this.menuIndex=3;
-      console.log(this.menuIndex)
     },
     getCurrentTime() {
       //获取当前时间并打印
