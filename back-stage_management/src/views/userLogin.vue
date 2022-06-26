@@ -67,6 +67,7 @@ export default {
   text-align: center;
   border-radius: 20px;
   margin-top: 10px;
+  overflow: hidden
 }
 .container h1{
   color: aliceblue;

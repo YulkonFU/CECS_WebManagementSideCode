@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import userLogin from '../views/userLogin.vue'
 import management from '../views/management.vue'
-
+import dataVisualization from '../views/dataVisualization.vue'
 
 const routes = [{
     path: '/',
@@ -13,7 +13,13 @@ const routes = [{
 }, {
     path: '/management',
     name: 'management',
-    component: management
+    component: management,
+    redirect: '/management/dataVisualization',
+    children: [{
+        path: "dataVisualization",
+        name: "dataVisualization",
+        component: dataVisualization
+    }]
 }]
 
 const router = createRouter({
