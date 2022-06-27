@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+    事件查询
     <router-view></router-view>
   </div>
 </template>

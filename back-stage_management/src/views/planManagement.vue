@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+    预案管理
     <router-view></router-view>
   </div>
 </template>

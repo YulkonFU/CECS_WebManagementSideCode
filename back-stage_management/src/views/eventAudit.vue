@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+    事件审核
     <router-view></router-view>
   </div>
 </template>

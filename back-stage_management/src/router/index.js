@@ -6,6 +6,14 @@ import emergencyCommand from '../views/emergencyCommand.vue'
 import planImplementation from '../views/planImplementation.vue'
 import resourceScheduling from '../views/resourceScheduling.vue'
 import dispositionDeployment from '../views/dispositionDeployment.vue'
+import dutyManagement from '../views/dutyManagement.vue'
+import eventManagement from '../views/eventManagement.vue'
+import eventAudit from '../views/eventAudit.vue'
+import eventQuery from '../views/eventQuery.vue'
+import planManagement from '../views/planManagement.vue'
+import dutyPlan from '../views/dutyPlan.vue'
+import dutyLog from '../views/dutyLog.vue'
+import dutyLeave from '../views/dutyLeave.vue'
 
 const routes = [{
     path: '/',
@@ -22,11 +30,12 @@ const routes = [{
     children: [{
         path: "dataVisualization",
         name: "dataVisualization",
-        component: dataVisualization
+        component: dataVisualization,
     }, {
         path: "emergencyCommand",
         name: "emergencyCommand",
         component: emergencyCommand,
+        redirect: '/management/emergencyCommand/planImplementation',
         children: [{
             path: "planImplementation",
             name: "planImplementation",
@@ -40,6 +49,42 @@ const routes = [{
             name: "dispositionDeployment",
             component: dispositionDeployment
         }]
+    }, {
+        path: "dutyManagement",
+        name: "dutyManagement",
+        component: dutyManagement,
+        redirect: "/management/dutyManagement/dutyPlan",
+        children: [{
+            path: "dutyPlan",
+            name: "dutyPlan",
+            component: dutyPlan
+        }, {
+            path: "dutyLog",
+            name: "dutyLog",
+            component: dutyLog
+        }, {
+            path: "dutyLeave",
+            name: "dutyLeave",
+            component: dutyLeave
+        }, ]
+    }, {
+        path: "eventManagement",
+        name: "eventManagement",
+        component: eventManagement,
+        redirect: "/management/eventManagement/eventAudit",
+        children: [{
+            path: "eventAudit",
+            name: "eventAudit",
+            component: eventAudit
+        }, {
+            path: "eventQuery",
+            name: "eventQuery",
+            component: eventQuery
+        }, {
+            path: "planManagement",
+            name: "planManagement",
+            component: planManagement
+        }, ]
     }]
 }]
 

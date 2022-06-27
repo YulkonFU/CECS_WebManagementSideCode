@@ -122,10 +122,12 @@ export default {
     //值班管理
     toDutyManagement(){
       this.menuIndex=2;
+      this.$router.push("/management/dutyManagement")
     },
     //事件管理
     toEventManagement(){
       this.menuIndex=3;
+      this.$router.push("/management/eventManagement")
     },
     getCurrentTime() {
       //获取当前时间并打印
