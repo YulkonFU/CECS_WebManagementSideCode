@@ -18,12 +18,12 @@
           </el-menu-item>
           <el-menu-item index="2" @click="toResourceScheduling">
             <span style="font-size: 20px" 
-              >资源调度</span
+              >救援物资</span
             >
           </el-menu-item>
           <el-menu-item index="3" @click="toDispositionDeployment">
             <span style="font-size: 20px" 
-              >处置部署</span
+              >救援组织</span
             >
           </el-menu-item>
         </el-menu>

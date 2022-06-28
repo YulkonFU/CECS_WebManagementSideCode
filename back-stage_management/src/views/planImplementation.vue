@@ -1,34 +1,54 @@
 <template>
   <div>
+    <div class="mt-4">
+      <el-input
+        @keydown.enter="toSearch"
+        v-model="keyword"
+        placeholder="通过关键词搜索↵"
+        class="input-with-select"
+      >
+        <template #prepend>
+          <el-select v-model="select" placeholder="待处理" style="width: 115px">
+            <el-option label="处理中" value="1" />
+            <el-option label="待处理" value="2" />
+          </el-select>
+        </template>
+        <template #append>
+          <img
+            src="../assets/sousuo.png"
+            style="width: 30px; height: 30px; cursor: pointer"
+            alt=""
+            @click="toSearch"
+          />
+        </template>
+      </el-input>
+    </div>
     <el-table :data="event" style="width: 100%">
-      <el-table-column label="事件编号" prop="id" />
-      <el-table-column label="事件类型" prop="type" />
-      <el-table-column label="日期" prop="date" />
+      <el-table-column label="事件编号" prop="id" width="80px" />
+      <el-table-column label="事件类型" prop="type" width="80px" />
+      <el-table-column label="事发时间" prop="occurDate" />
+      <el-table-column label="处理时间" prop="handleDate" />
       <el-table-column label="事发地" prop="location" />
-      <el-table-column label="事件等级" prop="level" />
+      <el-table-column label="事件等级" prop="level" width="80px" />
       <el-table-column
         label="描述"
         prop="description"
         show-overflow-tooltip="true"
       />
-      <el-table-column label="上报人" prop="reporter" />
-      <el-table-column label="状态" prop="state" />
-      <el-table-column label="执行人" prop="commander" />
-      <el-table-column label="预案id" prop="planId" />
-      <el-table-column label="救援队id" prop="teamId" />
-      <el-table-column align="right">
-        <template #header>
-          <el-input
-            v-model="keyword"
-            size="small"
-            placeholder="搜索↵"
-            @keydown.enter="toSearch"
-          />
-        </template>
-        <template #default>
-          <el-button size="small" @click="dialogTableVisible = true"
-            >选择预案</el-button
-          >
+      <el-table-column label="上报人" prop="reporter" width="80px" />
+      <el-table-column label="状态" prop="state" width="80px" />
+      <el-table-column label="执行人" prop="commander" width="80px" />
+      <el-table-column label="流程id" prop="flowId" width="80px" />
+      <el-table-column label="操作">
+        <template #default="scope">
+          <div style="display: flex; justify-content: center">
+            <el-button size="small" @click="execute(scope.$index, scope.row)"
+              >执行</el-button
+            >
+            <el-button size="small" @click="handleShow(scope.$index, scope.row)"
+              >查看预案</el-button
+            >
+          </div>
         </template>
       </el-table-column>
       <!-- 弹出预案表格用于选择 -->
@@ -66,6 +86,14 @@
           >
         </div>
       </el-dialog>
+      <el-drawer
+        v-model="drawer"
+        title="应急预案"
+        append-to-body="true"
+        show-close
+      >
+        <span>Hi there!</span>
+      </el-drawer>
     </el-table>
     <!-- 分页 -->
     <div class="block">
@@ -96,6 +124,8 @@ export default {
       dialogTableVisible: false, //控制弹出框的显示与隐藏
       selectRow: null, //选择的预案包含的信息,
       selectIndex: null, //选择预案序号
+      select: null, //选择的事件状态
+      drawer:false,//是否显示抽屉
       event: [],
       gridData: [
         {
@@ -124,12 +154,12 @@ export default {
   created() {
     this.axios
       .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/event/todo?pageNum=" +
+        "http://127.0.0.1:4523/m1/1171870-0-default/event/list?pageNum=" +
           this.pageNum +
           "&pageSize=" +
           this.pageSize +
-          "&keyword=" +
-          this.keyword
+          "&status=" +
+          "待处理"
       )
       .then((res) => {
         console.log(res);
@@ -151,7 +181,9 @@ export default {
       this.pageNum = val;
     },
     //通过关键词搜索
-    toSearch() {},
+    toSearch() {
+      console.log("点击了搜索");
+    },
     //当前选择的预案
     getCurrentRow(row) {
       this.selectRow = JSON.parse(JSON.stringify(row));
@@ -172,6 +204,17 @@ export default {
     rest() {
       this.selectIndex = null;
       this.selectRow = null;
+    },
+    //弹窗执行
+    execute(index, row) {
+      console.log(index, row);
+      this.dialogTableVisible = true;
+    },
+    //抽屉显示
+    handleShow(index, row) {
+      console.log(index, row);
+      console.log(this.drawer)
+      this.drawer = true;
     },
   },
 };
