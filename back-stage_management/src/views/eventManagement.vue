@@ -13,7 +13,7 @@
         >
           <el-menu-item index="1" @click="toEventAudit">
             <span style="font-size: 20px" 
-              >事件审核</span
+              >事件终止</span
             >
           </el-menu-item>
           <el-menu-item index="2" @click="toEventQuery">
@@ -45,7 +45,7 @@ export default {
   },
   methods:{
     toEventAudit(){
-      this.$router.push("/management/eventManagement/eventAudit")
+      this.$router.push("/management/eventManagement/eventTermination")
     },
     toEventQuery(){
       this.$router.push("/management/eventManagement/eventQuery")

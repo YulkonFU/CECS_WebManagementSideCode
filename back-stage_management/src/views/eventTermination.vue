@@ -17,32 +17,32 @@
         </template>
       </el-input>
     </div>
-    <el-table :data="plans" style="width: 100%">
-      <el-table-column label="编号" prop="id" width="80px" />
-      <el-table-column label="名称" prop="title" />
-      <el-table-column label="类型" prop="category"  />
-      <el-table-column label="作者" prop="author" />
-      <el-table-column label="等级" prop="level" width="80px" />
-      <el-table-column label="内容" prop="content" show-overflow-tooltip="true" />
+    <el-table :data="event" style="width: 100%">
+      <el-table-column label="事件编号" prop="id" width="80px" />
+      <el-table-column label="事件类型" prop="type" width="80px" />
+      <el-table-column label="事发时间" prop="startTime" />
+      <el-table-column label="处理时间" prop="handleDate" />
+      <el-table-column label="事发地" prop="location" />
+      <el-table-column label="事件等级" prop="level" width="80px" />
+      <el-table-column
+        label="描述"
+        prop="description"
+        show-overflow-tooltip="true"
+      />
+      <el-table-column label="上报人" prop="reporter" width="80px" />
+      <el-table-column label="状态" prop="state" width="80px" />
+      <el-table-column label="执行人" prop="commander" width="80px" />
+      <el-table-column label="流程id" prop="flowId" width="80px" />
       <el-table-column label="操作">
-        <template #header>
-          <el-button type="primary" plain @click="dialogFormVisible = true">
-            添加
-          </el-button>
-        </template>
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-            >修改</el-button
-          >
-          <el-button
-            size="small"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
-          >
+          <div style="display: flex; justify-content: center">
+            <el-button size="small" @click="termination(scope.$index, scope.row)"
+              >终止</el-button
+            >
+          </div>
         </template>
       </el-table-column>
-      <!-- 弹出预案表格用于修改 -->
+      <!-- 弹出预案表格用于选择 -->
       <el-dialog
         v-model="dialogTableVisible"
         title="请选择合适的预案"
@@ -77,6 +77,14 @@
           >
         </div>
       </el-dialog>
+      <el-drawer
+        v-model="drawer"
+        title="应急预案"
+        append-to-body="true"
+        show-close
+      >
+        <span>Hi there!</span>
+      </el-drawer>
     </el-table>
     <!-- 分页 -->
     <div class="block">
@@ -95,15 +103,21 @@
   </div>
 </template>
 <script>
+import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
+      type: "", //用户选择的预案类型
       pageNum: 1, //用户请求的分页的页数(默认为1)
       pageSize: 10, //用户请求的数据每一页多少条数据
       total: 0, //总条数
       keyword: "", //用户进行搜索的关键词
       dialogTableVisible: false, //控制弹出框的显示与隐藏
-      plans: [],//预案
+      selectRow: null, //选择的预案包含的信息,
+      selectIndex: null, //选择预案序号
+      select: null, //选择的事件状态
+      drawer:false,//是否显示抽屉
+      event: [],
       gridData: [
         {
           date: "2016-05-02",
@@ -131,7 +145,7 @@ export default {
   created() {
     this.axios
       .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/plans?pageNum=" +
+        "http://127.0.0.1:4523/m1/1171870-0-default/event/list?pageNum=" +
           this.pageNum +
           "&pageSize=" +
           this.pageSize +
@@ -140,11 +154,13 @@ export default {
       )
       .then((res) => {
         console.log(res);
-        this.plans = res.data.data.list;
+        this.event = res.data.data.list;
         this.total = res.data.data.total;
       });
   },
   methods: {
+    //用于执行预案
+    implement() {},
     //每页页数变化
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
@@ -159,8 +175,32 @@ export default {
     toSearch() {
       console.log("点击了搜索");
     },
-    handleEdit() {},
-    handleDelete() {},
+    //当前选择的预案
+    getCurrentRow(row) {
+      this.selectRow = JSON.parse(JSON.stringify(row));
+      console.log(this.selectRow);
+    },
+    //选择预案存入事件表中
+    selectPlan() {
+      if (this.selectRow != null) {
+        this.dialogTableVisible = false;
+      } else {
+        ElMessage({
+          message: "请选择预案",
+          type: "warning",
+        });
+      }
+    },
+    //重置
+    rest() {
+      this.selectIndex = null;
+      this.selectRow = null;
+    },
+    //终止
+    termination(index, row) {
+      console.log(index, row);
+      this.dialogTableVisible = true;
+    },
   },
 };
 </script>

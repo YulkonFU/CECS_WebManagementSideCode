@@ -8,7 +8,7 @@ import resourceScheduling from '../views/resourceScheduling.vue'
 import dispositionDeployment from '../views/dispositionDeployment.vue'
 import dutyManagement from '../views/dutyManagement.vue'
 import eventManagement from '../views/eventManagement.vue'
-import eventAudit from '../views/eventAudit.vue'
+import eventTermination from '../views/eventTermination.vue'
 import eventQuery from '../views/eventQuery.vue'
 import planManagement from '../views/planManagement.vue'
 import dutyPlan from '../views/dutyPlan.vue'
@@ -71,11 +71,11 @@ const routes = [{
         path: "eventManagement",
         name: "eventManagement",
         component: eventManagement,
-        redirect: "/management/eventManagement/eventAudit",
+        redirect: "/management/eventManagement/eventTermination",
         children: [{
-            path: "eventAudit",
-            name: "eventAudit",
-            component: eventAudit
+            path: "eventTermination",
+            name: "eventTermination",
+            component: eventTermination
         }, {
             path: "eventQuery",
             name: "eventQuery",

@@ -103,6 +103,16 @@ export default {
     handleDelete(index, row) {
       console.log(index, row);
     },
+        //每页页数变化
+    handleSizeChange(val) {
+      console.log(`每页 ${val}条`);
+      this.pageSize = val;
+    },
+    //切换页数
+    handleCurrentChange(val) {
+      console.log(`当前页 ${val}条`);
+      this.pageNum = val;
+    },
   },
 };
 </script>

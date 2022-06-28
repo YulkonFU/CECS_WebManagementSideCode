@@ -26,7 +26,7 @@
     <el-table :data="event" style="width: 100%">
       <el-table-column label="事件编号" prop="id" width="80px" />
       <el-table-column label="事件类型" prop="type" width="80px" />
-      <el-table-column label="事发时间" prop="occurDate" />
+      <el-table-column label="事发时间" prop="startTime" />
       <el-table-column label="处理时间" prop="handleDate" />
       <el-table-column label="事发地" prop="location" />
       <el-table-column label="事件等级" prop="level" width="80px" />
@@ -230,6 +230,5 @@ export default {
 // 修改表格提示框的宽度
 .el-popper {
   max-width: 50%;
-  font-size: 25px;
 }
 </style>
