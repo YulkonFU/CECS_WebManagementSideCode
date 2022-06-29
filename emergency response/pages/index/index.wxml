@@ -1,0 +1,20 @@
+<!--pages/index/index.wxml-->
+<view>
+  <view style="margin: 10rpx 0;">
+    <van-divider hairline="true" contentPosition="center" borderColor="red">应急消息</van-divider>
+  </view>
+  <view wx:for="event">
+    <van-cell-group inset>
+      <van-cell title="{{event.type}}" value="{{event.level}}" />
+    </van-cell-group>
+    <view style="text-align: right;">时间：{{event.time}}</view>
+    <van-divider dashed  borderColor="red"/>
+  </view>
+  <view>
+    <van-tabbar active="{{ active }}" active-color="#07c160" inactive-color="#000" bind:change="onChange" >
+    <van-tabbar-item icon="chat" bind:click="chat" >应急消息</van-tabbar-item>
+    <van-tabbar-item icon="description" bind:click="description">上报管理</van-tabbar-item>
+    <van-tabbar-item icon="friends-o" bind:click="friend">个人中心</van-tabbar-item>
+    </van-tabbar>
+  </view>
+</view>

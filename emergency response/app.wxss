@@ -1,0 +1,4 @@
+page{
+  background-color: #efefef;
+  box-sizing:content-box;
+}
