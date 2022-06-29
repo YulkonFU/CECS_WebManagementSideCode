@@ -1,0 +1,26 @@
+<!--pages/login/login.wxml-->
+<view style="padding: 15rpx 0; margin-top:130rpx;;">
+  <view style="font-size:60rpx;font-weight: bold;margin: 80rpx 0;text-align: center;color: skyblue;">
+    登录
+  </view>
+  <view style="margin: 50rpx 150rpx;">
+    <van-field
+    left-icon="user-o"
+    model:value="{{ username }}"
+    placeholder="请输入用户名"
+  />
+  </view>
+  <view style="margin: 50rpx 150rpx;">
+    <van-field
+    left-icon="lock"
+    type="password"
+    model:value="{{ password }}"
+    placeholder="请输入密码"
+  />
+  </view>
+  <view style="margin: 60rpx 150rpx;">
+    <van-button  type="primary" bind:click="login">登 录</van-button>
+
+  </view>
+</view>
+
