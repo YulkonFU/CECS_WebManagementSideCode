@@ -9,8 +9,8 @@
       >
         <template #prepend>
           <el-select v-model="select" placeholder="待处理" style="width: 115px">
-            <el-option label="处理中" value="1" />
-            <el-option label="待处理" value="2" />
+            <el-option label="处理中" value="处理中" />
+            <el-option label="待处理" value="待处理" />
           </el-select>
         </template>
         <template #append>
@@ -54,37 +54,41 @@
       <!-- 弹出预案表格用于选择 -->
       <el-dialog
         v-model="dialogTableVisible"
-        title="请选择合适的预案"
+        title="调度救援与物资"
         append-to-body="true"
       >
-        <el-table :data="gridData">
-          <el-table-column lable="选择" width="60px" fixed>
+        <el-cascader
+          :options="options"
+          v-model="name"
+          style="margin-right:10px"
+          :show-all-levels="false"
+          placeholder="请选择救援人员和物资"
+        />
+        <el-input
+          v-model="number"
+          type="number"
+          style="width: 30%;margin-right:10px"
+          placeholder="请输入数量"
+        />
+        <span style="margin-right:10px">库存{{50}}</span>
+        <el-button @click="addItem">添加</el-button>
+        <el-table :data="tableData" style="width: 100%" max-height="250">
+          <el-table-column fixed prop="name" label="名称" width="150" />
+          <el-table-column prop="category" label="类型" width="120" />
+          <el-table-column prop="number" label="数量" width="120" />
+          <el-table-column fixed="right" label="操作" width="120">
             <template #default="scope">
-              <el-radio
-                :label="scope.$index"
-                v-model="selectIndex"
-                @change.enter="getCurrentRow(scope.row)"
+              <el-button
+                link
+                type="primary"
+                size="small"
+                @click.prevent="deleteRow(scope.$index)"
               >
-                {{ " " }}
-              </el-radio>
+                删除
+              </el-button>
             </template>
           </el-table-column>
-          <el-table-column property="date" label="Date" width="150" />
-          <el-table-column property="name" label="Name" width="200" />
-          <el-table-column property="address" label="Address" />
         </el-table>
-        <div style="display: flex; justify-content: center">
-          <el-button
-            type="primary"
-            @click="selectPlan"
-            plain
-            style="margin: 10px"
-            >启动</el-button
-          >
-          <el-button type="primary" @click="rest" plain style="margin: 10px"
-            >重置</el-button
-          >
-        </div>
       </el-dialog>
       <el-drawer
         v-model="drawer"
@@ -116,39 +120,92 @@ import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
-      type: "", //用户选择的预案类型
       pageNum: 1, //用户请求的分页的页数(默认为1)
       pageSize: 10, //用户请求的数据每一页多少条数据
       total: 0, //总条数
       keyword: "", //用户进行搜索的关键词
       dialogTableVisible: false, //控制弹出框的显示与隐藏
-      selectRow: null, //选择的预案包含的信息,
-      selectIndex: null, //选择预案序号
       select: null, //选择的事件状态
-      drawer:false,//是否显示抽屉
+      drawer: false, //是否显示抽屉
       event: [],
-      gridData: [
+      name: "", //级联选择器选择的物资名称
+      number: null, //资源数量
+      options: [
+        //级联选择器
         {
-          date: "2016-05-02",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
+          value: "救援人力",
+          label: "救援人力",
+          children: [
+            {
+              value: "消防人员",
+              label: "消防人员",
+            },
+            {
+              value: "警务人员",
+              label: "警务人员",
+            },
+            {
+              value: "医护人员",
+              label: "医护人员",
+            },
+          ],
         },
         {
-          date: "2016-05-04",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
+          value: "消防物资",
+          label: "消防物资",
+          children: [
+            {
+              value: "消防车",
+              label: "消防车",
+            },
+            {
+              value: "灭火器",
+              label: "灭火器",
+            },
+            {
+              value: "防烟面罩",
+              label: "防烟面罩",
+            },
+          ],
         },
         {
-          date: "2016-05-01",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
+          value: "警用物资",
+          label: "警用物资",
+          children: [
+            {
+              value: "喷雾驱散器",
+              label: "喷雾驱散器",
+            },
+            {
+              value: "红外热像仪",
+              label: "红外热像仪",
+            },
+            {
+              value: "防爆盾",
+              label: "防爆盾",
+            },
+          ],
         },
         {
-          date: "2016-05-03",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
+          value: "医疗物资",
+          label: "医疗物资",
+          children: [
+            {
+              value: "防护服",
+              label: "防护服",
+            },
+            {
+              value: "防毒面具",
+              label: "防毒面具",
+            },
+            {
+              value: "医疗箱",
+              label: "医疗箱",
+            },
+          ],
         },
       ],
+      tableData: [],
     };
   },
   created() {
@@ -184,27 +241,6 @@ export default {
     toSearch() {
       console.log("点击了搜索");
     },
-    //当前选择的预案
-    getCurrentRow(row) {
-      this.selectRow = JSON.parse(JSON.stringify(row));
-      console.log(this.selectRow);
-    },
-    //选择预案存入事件表中
-    selectPlan() {
-      if (this.selectRow != null) {
-        this.dialogTableVisible = false;
-      } else {
-        ElMessage({
-          message: "请选择预案",
-          type: "warning",
-        });
-      }
-    },
-    //重置
-    rest() {
-      this.selectIndex = null;
-      this.selectRow = null;
-    },
     //弹窗执行
     execute(index, row) {
       console.log(index, row);
@@ -213,8 +249,33 @@ export default {
     //抽屉显示
     handleShow(index, row) {
       console.log(index, row);
-      console.log(this.drawer)
+      console.log(this.drawer);
       this.drawer = true;
+    },
+    //将选中的物资添加进数组
+    addItem() {
+      if (
+        this.name != null &&
+        this.number != null
+      ) {
+        var item = {
+          name: JSON.parse(JSON.stringify(this.name))[1],
+          category: JSON.parse(JSON.stringify(this.name))[0],
+          number: this.number,
+        };
+        this.tableData.push(item);
+        (this.name = null), (this.number = null);
+      }
+      else{
+        ElMessage({
+          message:"请检查是否输入内容",
+          type:"error"
+        })
+      }
+    },
+    //删除已选资源
+    deleteRow(index) {
+      this.tableData.splice(index, 1);
     },
   },
 };

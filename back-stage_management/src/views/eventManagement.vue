@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-container>
-      <el-aside width="15%">
+      <el-aside width="15%" style="height:calc(100vh - 80px)">
         <el-menu
           active-text-color="#ffd04b"
           background-color="#242f72"
@@ -29,7 +29,7 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-main>
+        <el-main style="height:calc(100vh - 80px)">
           <router-view></router-view>
         </el-main>
       </el-container>

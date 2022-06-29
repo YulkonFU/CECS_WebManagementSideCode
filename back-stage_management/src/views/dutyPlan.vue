@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="mt-4" style="display:flex;justify-content: space-between;">
+    <div class="mt-4" style="display: flex; justify-content: space-between">
       <el-input
-        style="width:50%"
+        style="width: 50%"
         @keydown.enter="toSearch"
         v-model="keyword"
         placeholder="通过关键词搜索↵"
@@ -17,24 +17,31 @@
           />
         </template>
       </el-input>
-      <el-button type="primary" round  style="margin-right:13px">导入</el-button>
+      >
     </div>
     <el-table :data="dutyPlan" style="width: 100%">
-      <el-table-column label="员工编号" prop="id" />
-      <el-table-column label="员工姓名" prop="name" />
+      <el-table-column label="编号" prop="id" />
+      <el-table-column label="员工编号" prop="userID" />
       <el-table-column label="值班日期" prop="date" />
-      <el-table-column label="值班地点" prop="location" />
+      <el-table-column label="值班地点" prop="place" />
       <el-table-column label="值班开始时间" prop="startTime" />
       <el-table-column label="值班结束时间" prop="endTime" />
-      <el-table-column label="值班状态" prop="state" />
       <el-table-column align="right">
         <template #header>
-          <el-button type="primary" plain @click="dialogFormVisible = true">
+          <el-button
+            type="primary"
+            plain
+            @click="(dialogFormVisible = true), add()"
+          >
             添加
           </el-button>
         </template>
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+          <el-button
+            size="small"
+            @click="
+              handleEdit(scope.$index, scope.row), (dialogFormVisible1 = true)
+            "
             >修改</el-button
           >
           <el-button
@@ -49,54 +56,98 @@
     <!-- 添加巡逻员 -->
     <el-dialog
       v-model="dialogFormVisible"
-      title="添加巡逻员"
+      title="添加排班"
       append-to-body="true"
     >
       <el-form :model="form">
-        <el-form-item label="人员姓名" :label-width="formLabelWidth">
-          <el-input v-model="form.name"/>
+        <el-form-item label="人员ID" :label-width="formLabelWidth">
+          <el-input v-model="form.userID" />
         </el-form-item>
         <el-form-item label="值班日期" :label-width="formLabelWidth">
           <el-date-picker
-          v-model="form.date"
-          type="date"
-          placeholder="Pick a date"
-          style="width: 100%"
-        />
+            v-model="form.date"
+            type="date"
+            placeholder="Pick a date"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="值班地点" :label-width="formLabelWidth">
-          <el-select v-model="form.location" placeholder="请输入值班地点">
-        <el-option label="A区" value="A区" />
-        <el-option label="B区" value="B区" />
-        <el-option label="C区" value="C区" />
-        <el-option label="D区" value="D区" />
-      </el-select>
+          <el-select v-model="form.place" placeholder="请输入值班地点">
+            <el-option label="A区" value="A区" />
+            <el-option label="B区" value="B区" />
+            <el-option label="C区" value="C区" />
+            <el-option label="D区" value="D区" />
+          </el-select>
         </el-form-item>
         <el-form-item label="开始时间" :label-width="formLabelWidth">
           <el-time-picker
-          v-model="form.startTime"
-          placeholder="请选择开始时间"
-          style="width: 100%"
-        />
+            v-model="form.startTime"
+            placeholder="请选择开始时间"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="结束时间" :label-width="formLabelWidth">
           <el-time-picker
-          v-model="form.endTime"
-          placeholder="请选择结束时间"
-          style="width: 100%"
-        />
-        </el-form-item>
-        <el-form-item label="值班状态" :label-width="formLabelWidth">
-          <el-select v-model="form.state" placeholder="请输入状态">
-        <el-option label="在岗" value="在岗" />
-        <el-option label="未在岗" value="未在岗" />
-      </el-select>
+            v-model="form.endTime"
+            placeholder="请选择结束时间"
+            style="width: 100%"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
           <el-button type="primary" @click="dialogFormVisible = false"
+            >确认</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+    <!-- 修改排班 -->
+    <el-dialog
+      v-model="dialogFormVisible1"
+      title="修改排班"
+      append-to-body="true"
+    >
+      <el-form :model="form">
+        <el-form-item label="人员ID" :label-width="formLabelWidth">
+          <el-input v-model="form.userID" />
+        </el-form-item>
+        <el-form-item label="值班日期" :label-width="formLabelWidth">
+          <el-date-picker
+            v-model="form.date"
+            type="date"
+            placeholder="Pick a date"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="值班地点" :label-width="formLabelWidth">
+          <el-select v-model="form.place" placeholder="请输入值班地点">
+            <el-option label="A区" value="A区" />
+            <el-option label="B区" value="B区" />
+            <el-option label="C区" value="C区" />
+            <el-option label="D区" value="D区" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="开始时间" :label-width="formLabelWidth">
+          <el-time-picker
+            v-model="form.startTime"
+            placeholder="请选择开始时间"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="结束时间" :label-width="formLabelWidth">
+          <el-time-picker
+            v-model="form.endTime"
+            placeholder="请选择结束时间"
+            style="width: 100%"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogFormVisible1 = false">取消</el-button>
+          <el-button type="primary" @click="dialogFormVisible1 = false"
             >确认</el-button
           >
         </span>
@@ -119,22 +170,23 @@
   </div>
 </template>
 <script>
+import * as XLSX from "xlsx";
 export default {
   data() {
     return {
-      keyword:"",//关键词
+      keyword: "", //关键词
       pageNum: 1, //用户请求的分页的页数(默认为1)
       pageSize: 10, //用户请求的数据每一页多少条数据
       total: 0, //总条数
       dutyPlan: [], //资源
       dialogFormVisible: false, //添加对话框显示与否
+      dialogFormVisible1: false, //修改对话框显示与否
       form: {
-        name: "",
-        date:"",
-        location:"",
-        startTime:"",
-        endTime:"",
-        state:""
+        userID: "",
+        date: "",
+        place: "",
+        startTime: "",
+        endTime: "",
       },
     };
   },
@@ -153,13 +205,23 @@ export default {
       });
   },
   methods: {
+    add() {
+      this.form = {
+        userID: "",
+        date: "",
+        place: "",
+        startTime: "",
+        endTime: "",
+      };
+    },
     handleEdit(index, row) {
       console.log(index, row);
+      this.form = row;
     },
     handleDelete(index, row) {
       console.log(index, row);
     },
-        //每页页数变化
+    //每页页数变化
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;
@@ -174,4 +236,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

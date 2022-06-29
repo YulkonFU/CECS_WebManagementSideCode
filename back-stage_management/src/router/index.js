@@ -14,6 +14,7 @@ import planManagement from '../views/planManagement.vue'
 import dutyPlan from '../views/dutyPlan.vue'
 import dutyLog from '../views/dutyLog.vue'
 import dutyLeave from '../views/dutyLeave.vue'
+import userManagement from '../views/userManagement.vue'
 
 const routes = [{
     path: '/',
@@ -86,7 +87,11 @@ const routes = [{
             component: planManagement
         }, ]
     }]
-}]
+}, {
+    path: '/userManagement',
+    name: 'userManagement',
+    component: userManagement
+}, ]
 
 const router = createRouter({
     history: createWebHistory(),

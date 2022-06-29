@@ -1,6 +1,6 @@
 <template v-slot:dropdown>
   <div>
-    <div class="home">
+    <div>
       <div class="header">
         <div
           style="
@@ -67,7 +67,7 @@
         </div>
       </div>
       <el-container>
-        <el-main>
+        <el-main >
           <router-view></router-view>
         </el-main>
       </el-container>

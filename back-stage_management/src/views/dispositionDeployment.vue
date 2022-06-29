@@ -2,19 +2,27 @@
   <div>
     <el-table :data="organization" style="width: 100%">
       <el-table-column label="救援编号" prop="id" />
-      <el-table-column label="救援单位" prop="organization" />
+      <el-table-column label="救援单位" prop="name" />
       <el-table-column label="可用人力" prop="manpower" />
-      <el-table-column label="类型" prop="category" />
+      <el-table-column label="类型" prop="type" />
       <el-table-column label="电话号码" prop="phoneNumber" />
       <el-table-column label="距离" prop="distance" />
       <el-table-column align="right">
         <template #header>
-          <el-button type="primary" plain @click="dialogFormVisible = true">
+          <el-button
+            type="primary"
+            plain
+            @click="(dialogFormVisible = true), add()"
+          >
             添加
           </el-button>
         </template>
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+          <el-button
+            size="small"
+            @click="
+              handleEdit(scope.$index, scope.row), (dialogFormVisible1 = true)
+            "
             >修改</el-button
           >
           <el-button
@@ -26,7 +34,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 添加资源对话框 -->
+    <!-- 添加组织对话框 -->
     <el-dialog
       v-model="dialogFormVisible"
       title="添加组织"
@@ -34,10 +42,10 @@
     >
       <el-form :model="form">
         <el-form-item label="组织名称" :label-width="formLabelWidth">
-          <el-input v-model="form.organization" />
+          <el-input v-model="form.name" />
         </el-form-item>
         <el-form-item label="组织类型" :label-width="formLabelWidth">
-          <el-input v-model="form.category" />
+          <el-input v-model="form.type" />
         </el-form-item>
         <el-form-item label="可用人力" :label-width="formLabelWidth">
           <el-input v-model="form.manpower" />
@@ -53,6 +61,38 @@
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
           <el-button type="primary" @click="dialogFormVisible = false"
+            >确认</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+    <!-- 修改组织对话框 -->
+    <el-dialog
+      v-model="dialogFormVisible1"
+      title="修改组织"
+      append-to-body="true"
+    >
+      <el-form :model="form">
+        <el-form-item label="组织名称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="组织类型" :label-width="formLabelWidth">
+          <el-input v-model="form.type" />
+        </el-form-item>
+        <el-form-item label="可用人力" :label-width="formLabelWidth">
+          <el-input v-model="form.manpower" />
+        </el-form-item>
+        <el-form-item label="电话号码" :label-width="formLabelWidth">
+          <el-input v-model="form.phoneNumber" />
+        </el-form-item>
+        <el-form-item label="救援距离" :label-width="formLabelWidth">
+          <el-input v-model="form.distance" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogFormVisible1 = false">取消</el-button>
+          <el-button type="primary" @click="dialogFormVisible1 = false"
             >确认</el-button
           >
         </span>
@@ -83,12 +123,13 @@ export default {
       total: 0, //总条数
       organization: [], //救援组织
       dialogFormVisible: false, //添加对话框显示与否
+      dialogFormVisible1:false,//修改对话框显示与否
       form: {
         name: "",
         category: "",
-        manpower:"",
-        phoneNumber:"",
-        distance:""
+        manpower: "",
+        phoneNumber: "",
+        distance: "",
       },
     };
   },
@@ -107,13 +148,23 @@ export default {
       });
   },
   methods: {
+    add() {
+      this.form = {
+        name: "",
+        category: "",
+        manpower: "",
+        phoneNumber: "",
+        distance: "",
+      };
+    },
     handleEdit(index, row) {
       console.log(index, row);
+      this.form = row;
     },
     handleDelete(index, row) {
       console.log(index, row);
     },
-        //每页页数变化
+    //每页页数变化
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;

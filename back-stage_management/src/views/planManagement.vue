@@ -20,18 +20,21 @@
     <el-table :data="plans" style="width: 100%">
       <el-table-column label="编号" prop="id" width="80px" />
       <el-table-column label="名称" prop="title" />
-      <el-table-column label="类型" prop="category"  />
+      <el-table-column label="类型" prop="category" />
       <el-table-column label="作者" prop="author" />
-      <el-table-column label="等级" prop="level" width="80px" />
-      <el-table-column label="内容" prop="content" show-overflow-tooltip="true" />
+      <el-table-column
+        label="内容"
+        prop="content"
+        show-overflow-tooltip="true"
+      />
       <el-table-column label="操作">
         <template #header>
-          <el-button type="primary" plain @click="dialogFormVisible = true">
+          <el-button type="primary" plain @click="(dialogFormVisible = true),add()">
             添加
           </el-button>
         </template>
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+          <el-button size="small" @click="handleEdit(scope.$index, scope.row),(dialogFormVisible1 = true)"
             >修改</el-button
           >
           <el-button
@@ -42,38 +45,84 @@
           >
         </template>
       </el-table-column>
-      <!-- 弹出预案表格用于修改 -->
+      <!-- 弹出预案表格用于添加 -->
       <el-dialog
-        v-model="dialogTableVisible"
-        title="请选择合适的预案"
+        v-model="dialogFormVisible"
+        title="添加预案"
         append-to-body="true"
       >
-        <el-table :data="gridData">
-          <el-table-column lable="选择" width="60px" fixed>
-            <template #default="scope">
-              <el-radio
-                :label="scope.$index"
-                v-model="selectIndex"
-                @change.enter="getCurrentRow(scope.row)"
-              >
-                {{ " " }}
-              </el-radio>
-            </template>
-          </el-table-column>
-          <el-table-column property="date" label="Date" width="150" />
-          <el-table-column property="name" label="Name" width="200" />
-          <el-table-column property="address" label="Address" />
-        </el-table>
+        <el-form
+          :label-position="labelPosition"
+          label-width="100px"
+          :model="plan"
+          style="max-width: 100%"
+        >
+          <el-form-item label="名称">
+            <el-input v-model="plan.name" />
+          </el-form-item>
+          <el-form-item label="预案类型">
+            <el-input v-model="plan.category" />
+          </el-form-item>
+          <el-form-item label="预案作者">
+            <el-input v-model="plan.author" />
+          </el-form-item>
+          <el-form-item label="内容">
+            <el-input
+              v-model="plan.content"
+              :autosize="{ minRows: 2, maxRows: 8 }"
+              type="textarea"
+              placeholder="请输入预案内容"
+            />
+          </el-form-item>
+        </el-form>
         <div style="display: flex; justify-content: center">
           <el-button
             type="primary"
-            @click="selectPlan"
+            @click="selectPlan,(dialogFormVisible = false)"
             plain
             style="margin: 10px"
-            >启动</el-button
+            >添加</el-button
           >
-          <el-button type="primary" @click="rest" plain style="margin: 10px"
-            >重置</el-button
+        </div>
+      </el-dialog>
+      <!-- 弹出预案表格用于修改 -->
+      <el-dialog
+        v-model="dialogFormVisible1"
+        title="修改预案"
+        append-to-body="true"
+      >
+        <el-form
+          :label-position="labelPosition"
+          label-width="100px"
+          :model="plan"
+          style="max-width: 100%"
+        >
+          <el-form-item label="名称">
+            <el-input v-model="plan.title" />
+          </el-form-item>
+          <el-form-item label="预案类型">
+            <el-input v-model="plan.category" />
+          </el-form-item>
+          <el-form-item label="预案作者">
+            <el-input v-model="plan.author" />
+          </el-form-item>
+          <el-form-item label="内容">
+            <el-input
+              v-model="plan.content"
+              :autosize="{ minRows: 2, maxRows: 8 }"
+              type="textarea"
+              placeholder="请输入预案内容"
+            />
+          </el-form-item>
+        </el-form>
+        <div style="display: flex; justify-content: center">
+          <el-button
+            type="primary"
+            @click="selectPlan,(dialogFormVisible1 = false)"
+            plain
+            style="margin: 10px"
+            >修改</el-button
+          >
           >
         </div>
       </el-dialog>
@@ -102,30 +151,15 @@ export default {
       pageSize: 10, //用户请求的数据每一页多少条数据
       total: 0, //总条数
       keyword: "", //用户进行搜索的关键词
-      dialogTableVisible: false, //控制弹出框的显示与隐藏
-      plans: [],//预案
-      gridData: [
-        {
-          date: "2016-05-02",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-        {
-          date: "2016-05-04",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-        {
-          date: "2016-05-01",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-        {
-          date: "2016-05-03",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-      ],
+      dialogFormVisible: false, //控制弹出框的显示与隐藏
+      dialogFormVisible1:false,//控制弹出框的显示与隐藏
+      plans: [], //预案
+      plan: {
+        title: "",
+        category: "",
+        author: "",
+        content: "",
+      },
     };
   },
   created() {
@@ -159,7 +193,17 @@ export default {
     toSearch() {
       console.log("点击了搜索");
     },
-    handleEdit() {},
+    add(){
+      this.plan={
+        title: "",
+        category: "",
+        author: "",
+        content: "",
+      }
+    },
+    handleEdit(index,row) {
+      this.plan=row;
+    },
     handleDelete() {},
   },
 };

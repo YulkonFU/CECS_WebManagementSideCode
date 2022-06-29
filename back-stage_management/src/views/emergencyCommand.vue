@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-container>
-      <el-aside width="15%">
+      <el-aside width="15%" style="height: calc(100vh - 80px);">
         <el-menu
           active-text-color="#ffd04b"
           background-color="#242f72"
@@ -13,7 +13,7 @@
         >
           <el-menu-item index="1" @click="toPlanImplementation">
             <span style="font-size: 20px" 
-              >预案执行</span
+              >事件处理</span
             >
           </el-menu-item>
           <el-menu-item index="2" @click="toResourceScheduling">
@@ -29,7 +29,7 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-main>
+        <el-main style="height: calc(100vh - 80px);">
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -63,5 +63,6 @@ export default {
 .main {
   width: 100%;
   height: 100%;
+  
 }
 </style>

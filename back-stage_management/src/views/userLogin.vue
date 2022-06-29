@@ -40,20 +40,16 @@
               />
               <br />
             </div>
+            <span class="getPassword">找回密码</span>
           </div>
+          <el-button
+            type="primary"
+            @click="toManagement"
+            style="margin-top: 20px"
+            >登录</el-button
+          >
         </form>
-        <el-button
-          type="primary"
-          @click="toManagement"
-          style="margin: 20px 30px 0 30px"
-          >登录</el-button
-        >
-        <el-button
-          type="primary"
-          @click="toGetPassword"
-          style="margin: 20px 0 0 30px"
-          >找回密码</el-button
-        >
+
         <router-view></router-view>
       </div>
     </div>
@@ -100,6 +96,13 @@ export default {
                 type: "error",
               });
             }
+          })
+          .catch((err) => {
+            console.log(err);
+            ElMessage({
+              message: "请检查网络连接",
+              type: "error",
+            });
           });
       }
     },
@@ -143,5 +146,14 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+.getPassword {
+  color: blue;
+  margin-left: 50%;
+  cursor: pointer;
+  font-size: 15px;
+}
+.getPassword:hover{
+  color: white;
 }
 </style>

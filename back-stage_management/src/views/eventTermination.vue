@@ -21,7 +21,7 @@
       <el-table-column label="事件编号" prop="id" width="80px" />
       <el-table-column label="事件类型" prop="type" width="80px" />
       <el-table-column label="事发时间" prop="startTime" />
-      <el-table-column label="处理时间" prop="handleDate" />
+      <el-table-column label="结束时间" prop="endTime" />
       <el-table-column label="事发地" prop="location" />
       <el-table-column label="事件等级" prop="level" width="80px" />
       <el-table-column
@@ -30,13 +30,15 @@
         show-overflow-tooltip="true"
       />
       <el-table-column label="上报人" prop="reporter" width="80px" />
-      <el-table-column label="状态" prop="state" width="80px" />
+      <el-table-column label="状态" prop="status" width="80px" />
       <el-table-column label="执行人" prop="commander" width="80px" />
-      <el-table-column label="流程id" prop="flowId" width="80px" />
+      <el-table-column label="流程id" prop="processId" width="80px" />
       <el-table-column label="操作">
         <template #default="scope">
           <div style="display: flex; justify-content: center">
-            <el-button size="small" @click="termination(scope.$index, scope.row)"
+            <el-button
+              size="small"
+              @click="termination(scope.$index, scope.row)"
               >终止</el-button
             >
           </div>
@@ -45,46 +47,29 @@
       <!-- 弹出预案表格用于选择 -->
       <el-dialog
         v-model="dialogTableVisible"
-        title="请选择合适的预案"
+        title="终止原因"
         append-to-body="true"
       >
-        <el-table :data="gridData">
-          <el-table-column lable="选择" width="60px" fixed>
-            <template #default="scope">
-              <el-radio
-                :label="scope.$index"
-                v-model="selectIndex"
-                @change.enter="getCurrentRow(scope.row)"
-              >
-                {{ " " }}
-              </el-radio>
-            </template>
-          </el-table-column>
-          <el-table-column property="date" label="Date" width="150" />
-          <el-table-column property="name" label="Name" width="200" />
-          <el-table-column property="address" label="Address" />
-        </el-table>
+        <el-select v-model="value" class="m-2" placeholder="已解决" >
+          <el-option label="已解决" value="已解决" />
+          <el-option label="无法解决" value="无法解决" />
+        </el-select>
+        <el-input
+        style="margin-top:10px"
+          v-model="reason"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          type="textarea"
+          placeholder="请输入事件终止的原因"
+        />
         <div style="display: flex; justify-content: center">
-          <el-button
-            type="primary"
-            @click="selectPlan"
-            plain
-            style="margin: 10px"
-            >启动</el-button
+          <el-button type="primary" @click="commit" plain style="margin: 10px"
+            >终止</el-button
           >
           <el-button type="primary" @click="rest" plain style="margin: 10px"
             >重置</el-button
           >
         </div>
       </el-dialog>
-      <el-drawer
-        v-model="drawer"
-        title="应急预案"
-        append-to-body="true"
-        show-close
-      >
-        <span>Hi there!</span>
-      </el-drawer>
     </el-table>
     <!-- 分页 -->
     <div class="block">
@@ -113,33 +98,9 @@ export default {
       total: 0, //总条数
       keyword: "", //用户进行搜索的关键词
       dialogTableVisible: false, //控制弹出框的显示与隐藏
-      selectRow: null, //选择的预案包含的信息,
-      selectIndex: null, //选择预案序号
-      select: null, //选择的事件状态
-      drawer:false,//是否显示抽屉
+      value: "已解决", //选择的事件终止状态
+      reason:"",//事件终止的原因
       event: [],
-      gridData: [
-        {
-          date: "2016-05-02",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-        {
-          date: "2016-05-04",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-        {
-          date: "2016-05-01",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-        {
-          date: "2016-05-03",
-          name: "John Smith",
-          address: "No.1518,  Jinshajiang Road, Putuo District",
-        },
-      ],
     };
   },
   created() {
@@ -175,32 +136,15 @@ export default {
     toSearch() {
       console.log("点击了搜索");
     },
-    //当前选择的预案
-    getCurrentRow(row) {
-      this.selectRow = JSON.parse(JSON.stringify(row));
-      console.log(this.selectRow);
-    },
-    //选择预案存入事件表中
-    selectPlan() {
-      if (this.selectRow != null) {
-        this.dialogTableVisible = false;
-      } else {
-        ElMessage({
-          message: "请选择预案",
-          type: "warning",
-        });
-      }
-    },
-    //重置
-    rest() {
-      this.selectIndex = null;
-      this.selectRow = null;
-    },
     //终止
     termination(index, row) {
       console.log(index, row);
       this.dialogTableVisible = true;
     },
+    //重置
+    rest(){
+      this.reason=""
+    }
   },
 };
 </script>

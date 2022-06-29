@@ -7,12 +7,16 @@
       <el-table-column label="资源数量" prop="inventory" />
       <el-table-column align="right">
         <template #header>
-          <el-button type="primary" plain @click="dialogFormVisible = true">
+          <el-button type="primary" plain @click="dialogFormVisible = true,add()">
             添加
           </el-button>
         </template>
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+          <el-button
+            size="small"
+            @click="
+              handleEdit(scope.$index, scope.row), (dialogFormVisible1 = true)
+            "
             >修改</el-button
           >
           <el-button
@@ -28,23 +32,51 @@
     <el-dialog
       v-model="dialogFormVisible"
       title="添加资源"
+      style="width: 30%"
       append-to-body="true"
     >
       <el-form :model="form">
         <el-form-item label="资源名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name"/>
+          <el-input v-model="form.name" />
         </el-form-item>
         <el-form-item label="资源类型" :label-width="formLabelWidth">
-          <el-input v-model="form.category"/>
+          <el-input v-model="form.category" />
         </el-form-item>
         <el-form-item label="资源数量" :label-width="formLabelWidth">
-          <el-input v-model="form.inventory"/>
+          <el-input v-model="form.inventory" />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
           <el-button type="primary" @click="dialogFormVisible = false"
+            >确认</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+    <!-- 修改资源对话框 -->
+    <el-dialog
+      v-model="dialogFormVisible1"
+      title="修改资源"
+      style="width: 30%"
+      append-to-body="true"
+    >
+      <el-form :model="form">
+        <el-form-item label="资源名称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="资源类型" :label-width="formLabelWidth">
+          <el-input v-model="form.category" />
+        </el-form-item>
+        <el-form-item label="资源数量" :label-width="formLabelWidth">
+          <el-input v-model="form.inventory" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogFormVisible1 = false">取消</el-button>
+          <el-button type="primary" @click="dialogFormVisible1 = false"
             >确认</el-button
           >
         </span>
@@ -75,10 +107,11 @@ export default {
       total: 0, //总条数
       source: [], //资源
       dialogFormVisible: false, //添加对话框显示与否
+      dialogFormVisible1: false, //修改对话框显示与否
       form: {
         name: "",
-        category:"",
-        inventory:null,
+        category: "",
+        inventory: null,
       },
     };
   },
@@ -97,13 +130,24 @@ export default {
       });
   },
   methods: {
+    //添加
+    add(){
+      this.form={
+        name: "",
+        category: "",
+        inventory: null,
+      }
+    },
+    //修改
     handleEdit(index, row) {
       console.log(index, row);
+      this.form=row;
     },
+    //删除
     handleDelete(index, row) {
       console.log(index, row);
     },
-        //每页页数变化
+    //每页页数变化
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;
