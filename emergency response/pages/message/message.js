@@ -1,19 +1,13 @@
-// pages/submit/submit.js
+// pages/message/message.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    active:1
+    active:0,
   },
 
-  onClick(event) {
-    wx.showToast({
-      title: `点击标签 ${event.detail + 1}`,
-      icon: 'none',
-    });
-  },
   chat(){
     wx.redirectTo({
       url: '../index/index',
@@ -21,12 +15,12 @@ Page({
   },
   description(){
     wx.redirectTo({
-      url: '../submit/submit',
+      url: '../submitting/submitting',
     })
   },
   friend(){
     wx.redirectTo({
       url: '../user/user',
     })
-  }
+  },
 })

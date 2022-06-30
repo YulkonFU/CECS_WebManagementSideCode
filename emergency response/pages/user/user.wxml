@@ -1,9 +1,46 @@
 <!--pages/user/user.wxml-->
-user
+<view>
+  <view style="text-align: center;margin-top: 50rpx;"><van-icon  name="user-o" color="skyblue" size="50px"/></view>
+  <van-cell-group inset >
+  <van-cell title="用户名" value="Lian" />
+  <van-cell title="性别" value="男" />
+  </van-cell-group>
+  <view style="text-align: center;margin-top: 60rpx;">
+    <van-row >
+    <van-col span="6"><van-icon name="checked" size="30px" color="red"/></van-col>
+    <van-col span="6">值班打卡</van-col>
+    <van-col span="12"><van-icon name="arrow" size="30px"  bind:click="clockIn"/></van-col>
+    </van-row>
+  </view>
+  <view style="text-align: center;margin-top: 70rpx;" >
+    <van-row >
+    <van-col span="6"><van-icon name="todo-list" size="30px" color="#2979FF"/></van-col>
+    <van-col span="6">值班计划</van-col>
+    <van-col span="12"><van-icon name="arrow" size="30px" bind:click="dutyPlan"/></van-col>
+    </van-row>
+  </view>
+  <view style="text-align: center;margin-top: 70rpx;" >
+    <van-row >
+    <van-col span="6"><van-icon name="underway" size="30px" color="orange"/></van-col>
+    <van-col span="6">值班请假</van-col>
+    <van-col span="12"><van-icon name="arrow" size="30px"  bind:click="leave"/></van-col>
+    </van-row>
+  </view>
+  <view style="text-align: center;margin-top: 70rpx;" >
+    <van-row >
+    <van-col span="6"><van-icon name="question" size="30px" color="green"/></van-col>
+    <van-col span="6">上报查询</van-col>
+    <van-col span="12"><van-icon name="arrow" size="30px" bind:click="query"/></van-col>
+    </van-row>
+  </view>
+  <view style="text-align: center;margin-top: 30rpx;" >
+    <van-button type="primary" size="small" bind:click="logout">退出登录</van-button>
+  </view>
+</view>
 <view>
     <van-tabbar active="{{ active }}" active-color="#07c160" inactive-color="#000" bind:change="onChange" >
     <van-tabbar-item icon="chat-o" bind:click="chat" >应急消息</van-tabbar-item>
-    <van-tabbar-item icon="description" bind:click="description">上报管理</van-tabbar-item>
+    <van-tabbar-item icon="description" bind:click="description">危机上报</van-tabbar-item>
     <van-tabbar-item icon="friends-o" bind:click="friend">个人中心</van-tabbar-item>
     </van-tabbar>
 </view>

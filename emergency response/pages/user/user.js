@@ -9,6 +9,32 @@ Page({
   },
 
 
+
+  logout(){
+    wx.redirectTo({
+      url: '../login/login',
+    })
+  },
+  clockIn(){
+    wx.redirectTo({
+      url: '../clockIn/clockIn',
+    })
+  },
+  dutyPlan(){
+    wx.redirectTo({
+      url: '../dutyPlan/dutyPlan',
+    })
+  },
+  leave(){
+    wx.redirectTo({
+      url: '../dutyLeave/dutyLeave',
+    })
+  },
+  query(){
+    wx.redirectTo({
+      url: '../submitQuery/submitQuery',
+    })
+  },
   onClick(event) {
     wx.showToast({
       title: `点击标签 ${event.detail + 1}`,
@@ -22,7 +48,7 @@ Page({
   },
   description(){
     wx.redirectTo({
-      url: '../submit/submit',
+      url: '../submitting/submitting',
     })
   },
   friend(){

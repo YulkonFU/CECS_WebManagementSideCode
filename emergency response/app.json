@@ -3,8 +3,13 @@
     "pages/index/index",
     "pages/logs/logs",
     "pages/login/login",
-    "pages/submit/submit",
-    "pages/user/user"
+    "pages/user/user",
+    "pages/message/message",
+    "pages/submitting/submitting",
+    "pages/clockIn/clockIn",
+    "pages/dutyPlan/dutyPlan",
+    "pages/dutyLeave/dutyLeave",
+    "pages/submitQuery/submitQuery"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -21,6 +26,14 @@
     "van-cell-group": "@vant/weapp/cell-group/index",
     "van-divider": "@vant/weapp/divider/index",
     "van-tabbar": "@vant/weapp/tabbar/index",
-    "van-tabbar-item": "@vant/weapp/tabbar-item/index"
+    "van-tabbar-item": "@vant/weapp/tabbar-item/index",
+    "van-share-sheet": "@vant/weapp/share-sheet/index",
+    "van-row": "@vant/weapp/row/index",
+    "van-col": "@vant/weapp/col/index",
+    "van-dropdown-menu": "@vant/weapp/dropdown-menu/index",
+    "van-dropdown-item": "@vant/weapp/dropdown-item/index",
+    "van-card": "@vant/weapp/card/index",
+    "van-dialog": "@vant/weapp/dialog/index"
+    
   }
 }
