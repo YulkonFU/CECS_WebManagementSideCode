@@ -1,4 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+    createRouter,
+    createWebHistory
+} from 'vue-router'
 import userLogin from '../views/userLogin.vue'
 import management from '../views/management.vue'
 import dataVisualization from '../views/dataVisualization.vue'
@@ -15,6 +18,7 @@ import dutyPlan from '../views/dutyPlan.vue'
 import dutyLog from '../views/dutyLog.vue'
 import dutyLeave from '../views/dutyLeave.vue'
 import userManagement from '../views/userManagement.vue'
+import axios from 'axios'
 
 const routes = [{
     path: '/',
@@ -92,10 +96,26 @@ const routes = [{
     name: 'userManagement',
     component: userManagement
 }, ]
-
 const router = createRouter({
     history: createWebHistory(),
     routes
+})
+
+//导航守卫
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('token')
+        // 判断是否有token(通过isAuthenticated判断),
+    if (to.name == 'login') {
+        localStorage.removeItem('token')
+        localStorage.removeItem('username')
+        next()
+    } else if (!token) {
+        console.log("未登录，请登录")
+        next('/login')
+    } else if (token) {
+        // 
+        next()
+    }
 })
 
 export default router
