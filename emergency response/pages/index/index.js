@@ -32,12 +32,17 @@ Page({
   },
   description(){
     wx.redirectTo({
-      url: '../submit/submit',
+      url: '../submitting/submitting',
     })
   },
   friend(){
     wx.redirectTo({
       url: '../user/user',
+    })
+  },
+  message(){
+    wx.redirectTo({
+      url: '../message/message',
     })
   }
 

@@ -35,8 +35,51 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "信息",
+          "pathName": "pages/message/message",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "上报中",
+          "pathName": "pages/submitting/submitting",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "值班打卡",
+          "pathName": "pages/clockIn/clockIn",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "值班计划",
+          "pathName": "pages/dutyPlan/dutyPlan",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "值班请假",
+          "pathName": "pages/dutyLeave/dutyLeave",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "上报查询",
+          "pathName": "pages/submitQuery/submitQuery",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
-  }
+  },
+  "libVersion": "2.24.6"
 }

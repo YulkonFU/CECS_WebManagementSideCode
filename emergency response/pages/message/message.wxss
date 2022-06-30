@@ -1,0 +1,5 @@
+/* pages/message/message.wxss */
+.cell{
+  width: 100%;
+  height: 100%;
+}
