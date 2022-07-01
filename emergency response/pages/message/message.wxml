@@ -3,8 +3,7 @@
   <view style="margin: 10rpx 0;">
     <van-divider hairline="true" contentPosition="center" borderColor="red">应急措施</van-divider>
   </view>
-  <van-card desc="描述信息" title="行动指南"
-/>
+  <van-card desc="描述信息" title="预案信息"/>
   <van-divider dashed  borderColor="red"/>
   <view><image src='/image/避难所.jpg'></image></view>
 </view>

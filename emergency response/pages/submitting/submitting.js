@@ -20,10 +20,43 @@ Page({
     ],
     value2:'c',
     show:'',
+    startTime:'',
+    location:'',
+    description:'',
   },
-
+  check1(){
+    if(this.data.location==null){
+      Dialog.alert({
+        message: '请输入信息',
+      }).then(() => {
+        // on close
+      }
+      );
+    }
+  },
+  check2(){
+    if(this.data.description==null){
+      Dialog.alert({
+        message: '请输入信息',
+      }).then(() => {
+        // on close
+      }
+      );
+    }
+  },
+  checkTime1(){
+    let dateReg = /^ *(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})*$/;
+    if(!dateReg.test(this.data.startTime)){
+      Dialog.alert({
+        message: '请输入正确日期格式',
+      }).then(() => {
+        // on close
+      }
+      );
+    }
+  },
   true1(){
-    this.show=true;
+    this.data.show=true;
     Dialog.alert({
       message: '上报成功',
       theme: 'round-button',

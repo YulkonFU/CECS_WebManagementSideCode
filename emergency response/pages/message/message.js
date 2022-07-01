@@ -8,6 +8,7 @@ Page({
     active:0,
   },
 
+  
   chat(){
     wx.redirectTo({
       url: '../index/index',
