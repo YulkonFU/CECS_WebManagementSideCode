@@ -27,7 +27,6 @@
       <el-table-column label="事件编号" prop="id" width="80px" />
       <el-table-column label="事件类型" prop="type" width="80px" />
       <el-table-column label="事发时间" prop="startTime" />
-      <el-table-column label="处理时间" prop="handleDate" />
       <el-table-column label="事发地" prop="location" />
       <el-table-column label="事件等级" prop="level" width="80px" />
       <el-table-column
@@ -36,9 +35,8 @@
         show-overflow-tooltip="true"
       />
       <el-table-column label="上报人" prop="reporter" width="80px" />
-      <el-table-column label="状态" prop="state" width="80px" />
+      <el-table-column label="状态" prop="status" width="80px" />
       <el-table-column label="执行人" prop="commander" width="80px" />
-      <el-table-column label="流程id" prop="flowId" width="80px" />
       <el-table-column label="操作">
         <template #default="scope">
           <div style="display: flex; justify-content: center">
@@ -60,17 +58,17 @@
         <el-cascader
           :options="options"
           v-model="name"
-          style="margin-right:10px"
+          style="margin-right: 10px"
           :show-all-levels="false"
           placeholder="请选择救援人员和物资"
         />
         <el-input
           v-model="number"
           type="number"
-          style="width: 30%;margin-right:10px"
+          style="width: 30%; margin-right: 10px"
           placeholder="请输入数量"
         />
-        <span style="margin-right:10px">库存{{50}}</span>
+        <span style="margin-right: 10px">库存{{ 50 }}</span>
         <el-button @click="addItem">添加</el-button>
         <el-table :data="tableData" style="width: 100%" max-height="250">
           <el-table-column fixed prop="name" label="名称" width="150" />
@@ -89,6 +87,7 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-button type="primary" plain @click="pushResource">部署</el-button>
       </el-dialog>
       <el-drawer
         v-model="drawer"
@@ -130,6 +129,7 @@ export default {
       event: [],
       name: "", //级联选择器选择的物资名称
       number: null, //资源数量
+      eventId:null,//执行的事件的id
       options: [
         //级联选择器
         {
@@ -211,7 +211,7 @@ export default {
   created() {
     this.axios
       .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/event/list?pageNum=" +
+        "http://127.0.0.1:4523/m1/1171870-0-default/events/list?pageNum=" +
           this.pageNum +
           "&pageSize=" +
           this.pageSize +
@@ -244,6 +244,7 @@ export default {
     //弹窗执行
     execute(index, row) {
       console.log(index, row);
+      this.eventId=row.id;
       this.dialogTableVisible = true;
     },
     //抽屉显示
@@ -254,10 +255,7 @@ export default {
     },
     //将选中的物资添加进数组
     addItem() {
-      if (
-        this.name != null &&
-        this.number != null
-      ) {
+      if (this.name != null && this.number != null) {
         var item = {
           name: JSON.parse(JSON.stringify(this.name))[1],
           category: JSON.parse(JSON.stringify(this.name))[0],
@@ -265,17 +263,31 @@ export default {
         };
         this.tableData.push(item);
         (this.name = null), (this.number = null);
-      }
-      else{
+      } else {
         ElMessage({
-          message:"请检查是否输入内容",
-          type:"error"
-        })
+          message: "请检查是否输入内容",
+          type: "error",
+        });
       }
     },
     //删除已选资源
     deleteRow(index) {
       this.tableData.splice(index, 1);
+    },
+    //提交所需资源
+    pushResource() {
+      this.axios
+        .request({
+          url: "http://127.0.0.1:8009/event/deploy",
+          method: "post",
+          data:{eventId:this.eventId,tableData:JSON.stringify(this.tableData)},
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };

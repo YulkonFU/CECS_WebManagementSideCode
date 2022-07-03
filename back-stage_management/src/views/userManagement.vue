@@ -12,7 +12,7 @@
           <span style="color: white; font-size: 25px">管理员后台系统</span>
         </div>
         <div>
-          <el-dropdown style="color:black">
+          <el-dropdown style="color: black">
             欢迎,{{ administrators }}
             <template #dropdown>
               <el-dropdown-menu>
@@ -24,6 +24,14 @@
       </el-header>
       <el-container>
         <el-main>
+          <el-button
+            type="primary"
+            size="small"
+            plain
+            style="float: right; margin-right: 13px"
+            @click="(dialogFormVisible = true), add()"
+            >添加</el-button
+          >
           <el-table :data="user" style="width: 100%">
             <el-table-column label="编号" prop="id" />
             <el-table-column label="用户名" prop="username" />
@@ -31,7 +39,7 @@
             <el-table-column label="年龄" prop="age" />
             <el-table-column label="性别" prop="sex" />
             <el-table-column label="创建时间" prop="createTime" />
-            <el-table-column label="状态" prop="status" />
+            <el-table-column label="权限" prop="roleName" />
             <el-table-column label="电话号码" prop="phoneNumber" />
             <el-table-column label="邮箱" prop="email" />
             <el-table-column align="right">
@@ -39,21 +47,29 @@
                 <el-input
                   v-model="search"
                   size="small"
-                  placeholder="Type to search"
+                  placeholder="请输入姓名搜索↵"
+                  @keydown.enter="toSearch"
                 />
               </template>
               <template #default="scope">
                 <el-button
                   size="small"
-                  @click="handleEdit(scope.$index, scope.row)"
-                  >Edit</el-button
+                  @click="
+                    handleEdit(scope.$index, scope.row),
+                      (dialogFormVisible1 = true)
+                  "
+                  >修改</el-button
                 >
-                <el-button
-                  size="small"
-                  type="danger"
-                  @click="handleDelete(scope.$index, scope.row)"
-                  >Delete</el-button
-                >
+
+                <el-popconfirm title="是否删除" @confirm="handleDelete(scope.$index, scope.row)">
+                  <template #reference>
+                    <el-button
+                      size="small"
+                      type="danger"
+                      >删除</el-button
+                    >
+                  </template>
+                </el-popconfirm>
               </template>
             </el-table-column>
           </el-table>
@@ -70,12 +86,126 @@
             >
             </el-pagination>
           </div>
+          <!-- 弹出预案表格用于添加 -->
+          <el-dialog
+            v-model="dialogFormVisible"
+            title="添加用户"
+            append-to-body="true"
+          >
+            <el-form
+              :label-position="labelPosition"
+              label-width="100px"
+              :rules="rules"
+              :model="form"
+              style="max-width: 100%"
+            >
+              <el-form-item label="姓名">
+                <el-input v-model="form.name" />
+              </el-form-item>
+              <el-form-item label="用户名">
+                <el-input v-model="form.username" />
+              </el-form-item>
+              <el-form-item label="密码">
+                <el-input type="password" v-model="form.password" />
+              </el-form-item>
+              <el-form-item label="年龄">
+                <el-input v-model="form.age" />
+              </el-form-item>
+              <el-form-item label="性别">
+                <el-select v-model="form.sex" class="m-2" placeholder="性别">
+                  <el-option label="男" value="1" />
+                  <el-option label="女" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="邮箱">
+                <el-input v-model="form.email" />
+              </el-form-item>
+              <el-form-item label="电话号码">
+                <el-input v-model="form.phoneNumber" />
+              </el-form-item>
+              <el-form-item label="权限">
+                <el-select
+                  v-model="form.roleName"
+                  class="m-2"
+                  placeholder="权限"
+                >
+                  <el-option label="总控人员" value="总控人员" />
+                  <el-option label="值班人员" value="值班人员" />
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <div style="display: flex; justify-content: center">
+              <el-button
+                type="primary"
+                @click="addUser()"
+                plain
+                style="margin: 10px"
+                >添加</el-button
+              >
+            </div>
+          </el-dialog>
+          <!-- 弹出预案表格用于修改 -->
+          <el-dialog
+            v-model="dialogFormVisible1"
+            title="修改用户"
+            append-to-body="true"
+          >
+            <el-form
+              :label-position="labelPosition"
+              label-width="100px"
+              :rules="rules"
+              :model="form"
+              style="max-width: 100%"
+            >
+              <el-form-item label="姓名">
+                <el-input v-model="form.name" />
+              </el-form-item>
+              <el-form-item label="用户名">
+                <el-input v-model="form.username" />
+              </el-form-item>
+              <el-form-item label="年龄">
+                <el-input v-model="form.age" />
+              </el-form-item>
+              <el-form-item label="性别">
+                <el-select v-model="form.status" class="m-2" placeholder="性别">
+                  <el-option label="男" value="1" />
+                  <el-option label="女" value="2" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="邮箱">
+                <el-input v-model="form.email" />
+              </el-form-item>
+              <el-form-item label="电话号码">
+                <el-input v-model="form.phoneNumber" />
+              </el-form-item>
+              <el-form-item label="权限">
+                <el-select
+                  v-model="form.roleName"
+                  class="m-2"
+                  placeholder="权限"
+                >
+                  <el-option label="总控人员" value="总控人员" />
+                  <el-option label="值班人员" value="值班人员" />
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <div style="display: flex; justify-content: center">
+              <el-button
+                type="primary"
+                @click="editUser(), (dialogFormVisible1 = false)"
+                plain
+                style="margin: 10px"
+                >修改</el-button
+              >
+            </div>
+          </el-dialog>
         </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 <script>
+import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
@@ -84,45 +214,111 @@ export default {
       pageSize: 10, //用户请求的数据每一页多少条数据
       total: 0, //总条数
       administrators: "", //管理员用户名
+      search: "", //通过用户名搜索
+      dialogFormVisible: false, //控制添加弹窗
+      dialogFormVisible1: false, //控制修改弹窗
+      form: {
+        age: null,
+        email: "",
+        name: "",
+        phoneNumber: "",
+        password: "",
+        roleName: "",
+        sex: null,
+        username: "",
+      },
     };
   },
   created() {
-    this.axios
-      .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/user/list?pageNum=" +
-          this.pageNum +
-          "&pageSize=" +
-          this.pageSize
-      )
-      .then((res) => {
-        console.log(res.data);
-        this.user = res.data.data.list;
-        this.total = res.data.data.total;
-      });
+    this.findUser();
     this.administrators = localStorage.getItem("username");
   },
   methods: {
+    //查找用户
+    findUser() {
+      this.axios
+        .get("http://127.0.0.1/users/list?pageNum="+ this.pageNum +"&pageSize=" +this.pageSize +"&name=" +this.search)
+        .then((res) => {
+          console.log(res);
+          this.user = res.data.data.list;
+          this.total = res.data.data.total;
+        });
+    },
+    //添加用户
+    addUser() {
+      this.axios
+        .post("http://127.0.0.1/users", this.form)
+        .then((res) => {
+          if (res.data.code == 200) {
+            ElMessage({
+              message: "添加成功",
+              type: "success",
+            });
+            (this.dialogFormVisible = false), this.findUser();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     handleEdit(index, row) {
-      console.log(index, row);
-      this.form = row;
+      this.form=row
+    },
+    //修改
+    editUser(){
+      let user=JSON.parse(JSON.stringify(this.form))
+      this.axios.put("http://127.0.0.1/users/"+user.id,user)
+      .then(res=>{
+        console.log(res);
+        this.findUser()
+      })
+      .catch(err=>{
+        console.log(err);
+      })
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      let user=JSON.parse(JSON.stringify(row))
+      console.log(user);
+      this.axios.delete("http://127.0.0.1/users/"+user.id)
+      .then(res=>{
+        console.log(res);
+        this.findUser()
+      })
+      .catch(err=>{
+        console.log(err);
+      })
     },
     //每页页数变化
     handleSizeChange(val) {
-      console.log(`每页 ${val}条`);
       this.pageSize = val;
+      this.findUser();
     },
     //切换页数
     handleCurrentChange(val) {
-      console.log(`当前页 ${val}条`);
       this.pageNum = val;
+      this.findUser();
     },
     //退出
-    loginOut(){
-      this.$router.push("/login")
-    }
+    loginOut() {
+      this.$router.push("/login");
+    },
+    //通过姓名搜索
+    toSearch() {
+      this.findUser();
+    },
+    //添加用户
+    add() {
+      this.form = {
+        age: null,
+        email: "",
+        name: "",
+        phoneNumber: "",
+        role: "",
+        sex: null,
+        status: null,
+        username: "",
+      };
+    },
   },
 };
 </script>

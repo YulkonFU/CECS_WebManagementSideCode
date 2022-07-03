@@ -57,7 +57,6 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 import { ElMessage } from "element-plus";
 export default {
   data() {
@@ -74,14 +73,24 @@ export default {
           type: "error",
         });
       } else {
-        axios
-          .post("http://127.0.0.1:4523/m1/1171870-0-default/user/login", {
-            username: this.username,
-            password: this.password,
+        var FormData = require("form-data");
+        var data = new FormData();
+        data.append("username", this.username);
+        data.append("password", this.password);
+        this.axios
+          .request({
+            url: 'http://127.0.0.1/auth/user/login',
+            method: "post",
+            data: data,
           })
           .then((res) => {
             console.log(res);
-            if (res.status == 200) {
+            if (res.data.code == 401) {
+              ElMessage({
+                message: res.data.msg,
+                type: "error",
+              });
+            } else {
               localStorage.setItem("token", res.data.data.token);
               localStorage.setItem("username", res.data.data.username);
               localStorage.setItem("id", res.data.data.id);
@@ -89,21 +98,20 @@ export default {
                 message: "登录成功",
                 type: "success",
               });
-              this.$router.push({ name: "management" });
-            } else {
-              ElMessage({
-                message: "请检查用户名和密码是否正确",
-                type: "error",
-              });
+              if(res.data.data.role[0]=="ADMIN"){
+                this.$router.push("/userManagement");
+              }
+              else if(res.data.data.role[0]=="CONTROLLER"){
+                this.$router.push("/management/dataVisualization");
+              }
+              else{
+                ElMessage({
+                  message:"没有权限",
+                  type:"error"
+                })
+              }
             }
           })
-          .catch((err) => {
-            console.log(err);
-            ElMessage({
-              message: "请检查网络连接",
-              type: "error",
-            });
-          });
       }
     },
   },
@@ -153,7 +161,7 @@ export default {
   cursor: pointer;
   font-size: 15px;
 }
-.getPassword:hover{
+.getPassword:hover {
   color: white;
 }
 </style>

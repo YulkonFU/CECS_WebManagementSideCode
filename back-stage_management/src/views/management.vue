@@ -38,6 +38,7 @@
             <img
               :src="imgUrl"
               style="width: 30px; height: 30px; margin-right: 20px"
+              :class="{ imgChange: isplay }"
               @click="playVoice"
               alt=""
             />
@@ -76,6 +77,18 @@
           </span>
           <span style="font-size: 20px">{{ menu[menuIndex] }}</span>
         </div>
+        <div>
+          <ul class="list">
+            <li
+              v-for="(item, index) in ulList"
+              :key="item.id"
+              :class="!index && play ? 'toUp' : ''"
+            >
+            <img src="../assets/gonggao.png"  style="width:20px;height:20px" alt="">
+              {{ item.msg }}
+            </li>
+          </ul>
+        </div>
         <div
           style="
             margin-right: 20px;
@@ -113,11 +126,14 @@ export default {
       wea: "", //当前天气情况
       week: "", //当前星期几
       nowTime: "", //当前时间
-      isFirst:true,//是否是第一次渲染
+      isFirst: true, //是否是第一次渲染
       isplay: false, //是否播放语音
-      imgUrl:require('../assets/guangbo_white.png'),
+      imgUrl: require("../assets/guangbo_white.png"),
       player: new Audio(),
       username: "用户名",
+
+      ulList: [],
+      play: false,
     };
   },
   created() {
@@ -127,6 +143,16 @@ export default {
       )
       .then((res) => {
         console.log(res.data);
+        this.ulList.push({ msg: res.data.air_tips });
+        this.ulList.push({ msg: res.data.alarm.alarm_title });
+        this.ulList.push({
+          msg:
+            res.data.aqi.jinghuaqi +
+            "," +
+            res.data.aqi.kaichuang +
+            "," +
+            res.data.aqi.kouzhao,
+        });
         this.nowTmp = res.data.tem;
         this.wea = res.data.wea;
         this.week = res.data.week;
@@ -139,8 +165,19 @@ export default {
       that.getCurrentTime();
     }, 1000);
     this.username = localStorage.getItem("username");
+    setInterval(this.startPlay, 2000);
   },
   methods: {
+    //消息轮播
+    startPlay() {
+      let that = this;
+      that.play = true; //开始播放
+      setTimeout(() => {
+        that.ulList.push(that.ulList[0]); //将第一条数据塞到最后一个
+        that.ulList.shift(); //删除第一条数据
+        that.play = false; //暂停播放
+      }, 1000);
+    },
     //退出
     loginOut() {
       this.$router.push("/login");
@@ -184,7 +221,7 @@ export default {
       this.nowTime = _this.gettime;
     },
     playVoice(text) {
-      text="地震来了，请大家寻找安全位置躲避"
+      text = "。A区发生火灾，请尽快部署措施";
       if (this.isFirst) {
         var mp3 =
           "https://tts.youdao.com/fanyivoice?word=" +
@@ -192,16 +229,16 @@ export default {
           "&le=zh&keyfrom=speaker-target";
         this.player = new Audio(mp3);
       }
-      this.isFirst=false;
-      this.isplay=!this.isplay
+      this.isFirst = false;
+      this.isplay = !this.isplay;
       if (this.isplay == true) {
-        this.imgUrl=require('../assets/guangbo_red.png')
+        this.imgUrl = require("../assets/guangbo_red.png");
         this.player.loop = true; //循环播放
         this.player.play(); //播放 mp3这个音频对象
       } else {
-        this.imgUrl=require('../assets/guangbo_white.png')
+        this.imgUrl = require("../assets/guangbo_white.png");
         this.player.pause();
-        this.player.load()
+        this.player.load();
       }
     },
   },
@@ -223,14 +260,14 @@ export default {
   align-items: center;
 }
 .menu {
-  font-size: 25px;
+  font-size: 24px;
   cursor: default;
   color: white;
 }
 .menuSelect {
-  font-size: 25px;
+  font-size: 24px;
   cursor: default;
-  color: #06fae4;
+  color: #facc05;
 }
 .second {
   height: 30px;
@@ -238,9 +275,74 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  overflow: hidden;
   color: white;
 }
 .el-main {
   padding: 0;
+}
+
+@keyframes scaleDraw {
+  /*定义关键帧、scaleDrew是需要绑定到选择器的关键帧名称*/
+
+  0% {
+    transform: scale(1);
+
+    /*开始为原始大小*/
+  }
+
+  25% {
+    transform: scale(1.3);
+
+    /*放大1.1倍*/
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(1.3);
+  }
+}
+.imgChange {
+  -webkit-animation-name: scaleDraw;
+
+  /*关键帧名称*/
+
+  -webkit-animation-timing-function: ease-in-out;
+
+  /*动画的速度曲线*/
+
+  -webkit-animation-iteration-count: infinite;
+
+  /*动画播放的次数*/
+
+  -webkit-animation-duration: 5s;
+
+  /*动画所花费的时间*/
+}
+.toUp {
+  margin-top: -40px;
+  transition: all 0.5s;
+}
+
+.list {
+  list-style: none;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  height: 40px;
+  padding: 0;
+  margin: 0;
+}
+li {
+  height: 40px;
+  line-height: 40px;
+  font-size:13px;
+  color: #FFCCCC;
+  display: flex;
+  align-items: center;
+  text-align: center;
 }
 </style>

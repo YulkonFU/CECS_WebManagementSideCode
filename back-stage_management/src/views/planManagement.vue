@@ -123,7 +123,6 @@
             style="margin: 10px"
             >修改</el-button
           >
-          >
         </div>
       </el-dialog>
     </el-table>

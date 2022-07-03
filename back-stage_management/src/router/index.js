@@ -18,7 +18,7 @@ import dutyPlan from '../views/dutyPlan.vue'
 import dutyLog from '../views/dutyLog.vue'
 import dutyLeave from '../views/dutyLeave.vue'
 import userManagement from '../views/userManagement.vue'
-import axios from 'axios'
+import retrievePassword from '../views/retrievePassword.vue'
 
 const routes = [{
     path: '/',
@@ -27,6 +27,10 @@ const routes = [{
     path: '/login',
     name: 'login',
     component: userLogin
+}, {
+    path: '/retrievePassword',
+    name: 'retrievePassword',
+    component: retrievePassword
 }, {
     path: '/management',
     name: 'management',
@@ -108,6 +112,9 @@ router.beforeEach((to, from, next) => {
     if (to.name == 'login') {
         localStorage.removeItem('token')
         localStorage.removeItem('username')
+        next()
+    }
+    if (to.name == 'retrievePassword') {
         next()
     } else if (!token) {
         console.log("未登录，请登录")
