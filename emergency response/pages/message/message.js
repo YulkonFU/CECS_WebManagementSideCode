@@ -6,8 +6,20 @@ Page({
    */
   data: {
     active:0,
+    content:'',
   },
-
+  onLoad(){
+    
+    var that = this;
+    wx.getStorage({
+      key: 'event_content',
+      success(res){
+        that.setData({
+          content: res.data,
+        })
+      }
+    })
+  },
   
   chat(){
     wx.redirectTo({

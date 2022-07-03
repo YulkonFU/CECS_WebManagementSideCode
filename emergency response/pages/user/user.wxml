@@ -2,8 +2,8 @@
 <view>
   <view style="text-align: center;margin-top: 50rpx;"><van-icon  name="user-o" color="skyblue" size="50px"/></view>
   <van-cell-group inset >
-  <van-cell title="用户名" value="Lian" />
-  <van-cell title="性别" value="男" />
+  <van-cell title="用户名" value="{{user.data.name}}" />
+  <van-cell title="性别" value="{{user.data.sex}}" />
   </van-cell-group>
   <view style="text-align: center;margin-top: 60rpx;">
     <van-row >

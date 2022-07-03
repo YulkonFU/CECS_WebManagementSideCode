@@ -5,8 +5,8 @@
   </view>
   <view>
     <van-cell-group>
-      <van-cell title="员工编号" model:value="{{ user.id }}" />
-      <van-cell title="员工姓名" model:value="{{ user.uername }}" />
+      <van-cell title="员工编号" model:value="{{ user.data.id }}" />
+      <van-cell title="员工姓名" model:value="{{ user.data.name }}" />
       <van-cell title="打卡时间" model:value="{{time}}" />
       <van-cell title="值班地点" model:value="{{ user.uername }}" />
     <van-cell-group>

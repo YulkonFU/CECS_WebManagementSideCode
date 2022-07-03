@@ -7,7 +7,7 @@
     <van-cell-group inset>
       <van-cell title="危机类型" value="{{event.type}}"/>
       <van-cell title="危机程度" value="{{event.level}}"/>
-      <van-cell title="事件状态" value="{{event.state}}"/>
+      <van-cell title="事件状态" value="{{event.status}}"/>
       <van-cell title="事件处理时间" value="{{event.startTime}}"/>
       <van-cell title="事件终止时间" value="{{event.endTime}}"/>
       <van-cell title="事件发生地点" value="{{event.location}}"/>
