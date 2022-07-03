@@ -8,14 +8,21 @@
       <van-cell title="员工姓名" value="{{ user.uername }}" />
     </van-cell-group> -->
     <van-cell-group>
-    <van-field value="{{ value }}" placeholder="请输入日期" label="请假日期"/>
-    <van-field value="{{ value }}" placeholder="请输入请假类型" label="请假类型"/>
-    <van-field value="{{ value }}" placeholder="请输入时间" label="请假开始时间"/>
-    <van-field value="{{ value }}" placeholder="请输入时间" label="请假结束时间"/>
-    <van-field value="{{ message }}" label="请假原因" type="textarea" placeholder="请输入请假原因" autosize/>
+    <van-field model:value="{{ date }}" placeholder="请输入年-月-日" label="请假日期" bind:blur="checkDate"/>
+    <van-field model:value="{{ startTime }}" placeholder="请输入年-月-日 时:分:秒" label="请假开始时间"bind:blur="checkTime1"/>
+    <van-field model:value="{{ endTime }}" placeholder="请输入年-月-日 时:分:秒" label="请假结束时间"bind:blur="checkTime2"/>
+    <van-field model:value="{{ message }}" label="请假原因" type="textarea" placeholder="请输入请假原因" autosize/>
     </van-cell-group>
     <view style="margin:20px auto;text-align: center;"><van-button type="primary" bind:click="true">提交</van-button></view>
+    <view style="margin:20px auto;text-align: center;"><van-button type="primary" bind:click="leave">查询请假</van-button></view>
     <van-dialog show="{{ show }}"  id="van-dialog" />
+    <van-dialog use-slot title="标题" show="{{ show1 }}"bind:close="onClose" >
+      <van-cell-group inset>
+        <van-cell title="请假状态" value="{{status}}" />
+        <van-card desc="内容" title="审核原因"/>
+      </van-cell-group>
+    </van-dialog>
+
   </view>
 </view>
 

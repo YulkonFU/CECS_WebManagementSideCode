@@ -8,7 +8,7 @@ export const request = (params) => {
   })
   
   // 后台的请求地址，记得修改成你自己的地址
-  const baseUrl = 'http://localhost:8001';
+  const baseUrl = 'https://mock.apifox.cn/m1/1171870-0-default';
   
   return new Promise((resolve, reject) => {
     wx.request({

@@ -5,12 +5,27 @@ Page({
    * 页面的初始数据
    */
   data: {
-    active:2
+    active:2,
+    user:'',
   },
 
 
 
+  onLoad(){
+    var user = wx.getStorageSync('user');
+    if(user.data.sex==0){
+      user.data.sex = '未知'
+    }
+    if(user.data.sex==1){
+      user.data.sex = '男'
+    }
+    else{
+      user.data.sex = '女'
+    }
+    this.setData({user:user})
+  },
   logout(){
+    wx.removeStorageSync('user');
     wx.redirectTo({
       url: '../login/login',
     })

@@ -3,9 +3,10 @@
   <view style="margin: 10rpx 0;">
     <van-divider hairline="true" contentPosition="center" borderColor="red">应急消息</van-divider>
   </view>
-  <view wx:for="event" wx:key="{{event.id}}" >
+  <view wx:for="{{event}}" wx:for-item="e" wx:key="index" >
     <van-cell-group inset>
-      <van-cell title="事件类型" value="事件地点" bind:click="message" label="发生时间:{{}}"/>
+      <van-cell title="{{e.type}}" value="{{e.location}}" bind:click="message" label="发生时间:{{e.startTime}}"
+      data-content="{{e.content}}"/>
     </van-cell-group>
     <!-- <view style="text-align: right; ">时间：{{event.time}}</view> -->
     <van-divider dashed  borderColor="red"/>

@@ -6,12 +6,12 @@
 </view>
 <view>
     <van-cell-group>
-      <van-cell title="员工编号" value="{{ user.id }}" />
-      <van-cell title="员工姓名" value="{{ user.uername }}" />
-      <van-cell title="值班日期" value="{{ user.uername }}" />
-      <van-cell title="值班开始时间" value="{{}}" />
-      <van-cell title="值班开始时间" value="{{}}" />
-      <van-cell title="值班地点" value="{{ user.uername }}" />
+      <van-cell title="员工编号" value="{{ user.data.id }}" />
+      <van-cell title="员工姓名" value="{{ user.data.name }}" />
+      <van-cell title="值班日期" value="{{ schedule.duty_date }}" />
+      <van-cell title="值班开始时间" value="{{schedule.duty_start_time}}" />
+      <van-cell title="值班结束时间" value="{{schedule.duty_end_time}}" />
+      <van-cell title="值班地点" value="{{ schedule.duty_place }}" />
     </van-cell-group>
   </view>
 </view>

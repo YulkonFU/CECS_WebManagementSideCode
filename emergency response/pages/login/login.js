@@ -8,12 +8,12 @@ Page({
   login() {
     // 先构建请求的json
     let data = {
-      account: this.data.username,
+      username: this.data.username,
        password: this.data.password
       }
       // 发送请求给后台
       request({
-        url: '/after/admin/login',
+        url: '/auth/user/login',
         method: 'POST',
         data: data
       }).then(res => {
@@ -23,7 +23,15 @@ Page({
             title: '登录成功',
             icon: 'succcess'
           })
-          wx.setStorageSync('user', res)
+          let id = res.data.id;
+          request({
+            url: '/users/{id}',
+            method: 'GET',
+            data: {id:id}
+          }).then(res => {
+            console.log(res);
+            wx.setStorageSync('user', res);
+          })
           setTimeout(() => {
             wx.navigateTo({
               url: '../index/index',

@@ -5,13 +5,13 @@
   </view>
   <view>
   <van-dropdown-menu>
-    <van-dropdown-item  value="{{ value1 }}" options="{{ option1 }}" />
-    <van-dropdown-item  value="{{ value2 }}" options="{{ option2 }}" />
+    <van-dropdown-item  model:value="{{ value1 }}" options="{{ option1 }}" />
+    <van-dropdown-item  model:value="{{ value2 }}" options="{{ option2 }}" />
   </van-dropdown-menu>
   <van-cell-group>
-    <van-field label="发生时间" value="{{ event.startTime }}"placeholder="请输入发生时间"bind:change="onChange"/>
-    <van-field label="具体位置" value="{{ event.location }}"placeholder="请输入具体位置"bind:change="onChange"/>
-    <van-field label="情况描述" value="{{ event.description }}"placeholder="请详细描述问题"bind:change="onChange" autosize border="{{ false }}" type="textarea"/>
+    <van-field label="发生时间" model:value="{{ startTime }}"placeholder="请输入年-月-日 时:分:秒"bind:change="onChange" bind:blur="checkTime1"/>
+    <van-field label="具体位置" model:value="{{ location }}"placeholder="请输入具体位置"bind:blur="check1"/>
+    <van-field label="情况描述" model:value="{{ description }}"placeholder="请详细描述问题"bind:blur="check2" autosize border="{{ false }}" type="textarea"/>
   </van-cell-group>
   <view style="text-align: center;margin-top: 50px;">
     <van-row>
