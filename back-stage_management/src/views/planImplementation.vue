@@ -8,9 +8,9 @@
         class="input-with-select"
       >
         <template #prepend>
-          <el-select v-model="select" placeholder="待处理" style="width: 115px">
-            <el-option label="处理中" value="处理中" />
-            <el-option label="待处理" value="待处理" />
+          <el-select v-model="status" placeholder="状态选择" @change="getByStatus" style="width: 115px">
+            <el-option label="待处理" value=0 />
+            <el-option label="响应升级" value=2 />
           </el-select>
         </template>
         <template #append>
@@ -24,7 +24,7 @@
       </el-input>
     </div>
     <el-table :data="event" style="width: 100%">
-      <el-table-column label="事件编号" prop="id" width="80px" />
+      <el-table-column label="事件编号" prop="eventId" width="80px" />
       <el-table-column label="事件类型" prop="type" width="80px" />
       <el-table-column label="事发时间" prop="startTime" />
       <el-table-column label="事发地" prop="location" />
@@ -68,7 +68,6 @@
           style="width: 30%; margin-right: 10px"
           placeholder="请输入数量"
         />
-        <span style="margin-right: 10px">库存{{ 50 }}</span>
         <el-button @click="addItem">添加</el-button>
         <el-table :data="tableData" style="width: 100%" max-height="250">
           <el-table-column fixed prop="name" label="名称" width="150" />
@@ -95,7 +94,10 @@
         append-to-body="true"
         show-close
       >
-        <span>Hi there!</span>
+        <p>标题:{{plan.title}}</p>
+        <p>作者:{{plan.author}}</p>
+        <p>类型:{{plan.category}}</p>
+        <p>内容：{{plan.content}}</p>
       </el-drawer>
     </el-table>
     <!-- 分页 -->
@@ -124,12 +126,19 @@ export default {
       total: 0, //总条数
       keyword: "", //用户进行搜索的关键词
       dialogTableVisible: false, //控制弹出框的显示与隐藏
-      select: null, //选择的事件状态
+      status: "0", //选择的事件状态
       drawer: false, //是否显示抽屉
       event: [],
       name: "", //级联选择器选择的物资名称
       number: null, //资源数量
       eventId:null,//执行的事件的id
+      plan:{
+        author:"",//作者
+        category:"",//类型
+        content:"",//内容
+        id:null,//id
+        title:null//id
+      },
       options: [
         //级联选择器
         {
@@ -209,48 +218,52 @@ export default {
     };
   },
   created() {
-    this.axios
-      .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/events/list?pageNum=" +
-          this.pageNum +
-          "&pageSize=" +
-          this.pageSize +
-          "&status=" +
-          "待处理"
-      )
-      .then((res) => {
-        console.log(res);
-        this.event = res.data.data.list;
-        this.total = res.data.data.total;
-      });
+    this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
   },
   methods: {
     //用于执行预案
     implement() {},
     //每页页数变化
     handleSizeChange(val) {
-      console.log(`每页 ${val}条`);
       this.pageSize = val;
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
     },
     //切换页数
     handleCurrentChange(val) {
-      console.log(`当前页 ${val}条`);
       this.pageNum = val;
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
     },
     //通过关键词搜索
     toSearch() {
-      console.log("点击了搜索");
+      console.log("搜索成功");
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
+    },
+    //通过状态查询
+    getByStatus(val){
+      console.log(val);
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,val)
     },
     //弹窗执行
     execute(index, row) {
       console.log(index, row);
-      this.eventId=row.id;
+      row=JSON.parse(JSON.stringify(row));
+      this.eventId=row.eventId;
       this.dialogTableVisible = true;
     },
     //抽屉显示
     handleShow(index, row) {
-      console.log(index, row);
-      console.log(this.drawer);
+      console.log(row.planId);
+      this.plan={
+        author:"",//作者
+        category:"",//类型
+        content:"",//内容
+        id:null,//id
+        title:null//id
+      }
+      this.axios.get("http://127.0.0.1/plan/"+row.planId)
+      .then(res=>{
+        this.plan=res.data.data;
+      })
       this.drawer = true;
     },
     //将选中的物资添加进数组
@@ -276,19 +289,45 @@ export default {
     },
     //提交所需资源
     pushResource() {
+      console.log(this.eventId);
       this.axios
         .request({
-          url: "http://127.0.0.1:8009/event/deploy",
+          url: "http://127.0.0.1/events/processing",
           method: "post",
           data:{eventId:this.eventId,tableData:JSON.stringify(this.tableData)},
         })
         .then((res) => {
-          console.log(res);
+          console.log(res)
+          if(res.data){
+            ElMessage({
+              message:"部署成功",
+              type:"success"
+            })
+            this.dialogTableVisible=false;
+            this.tableData=[]
+            this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
+          }
         })
         .catch((err) => {
           console.log(err);
         });
     },
+    //查找事件列表
+    getEventList(pageNum,pageSize,keyword,status){
+      console.log(status);
+      if(status!=null){
+        status=Number(status)
+      }else{
+        status=""
+      }
+      this.axios.get("http://127.0.0.1/events/list?pageNum="+ pageNum +"&pageSize=" +pageSize +"&keywords=" +keyword
+      +"&status="+status)
+      .then(res=>{
+        console.log(res);
+        this.event=res.data.data.list;
+        this.total=res.data.data.total
+      })
+    }
   },
 };
 </script>

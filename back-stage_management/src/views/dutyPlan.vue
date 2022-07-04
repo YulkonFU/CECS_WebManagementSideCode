@@ -17,13 +17,12 @@
           />
         </template>
       </el-input>
-      >
     </div>
     <el-table :data="dutyPlan" style="width: 100%">
       <el-table-column label="编号" prop="id" />
-      <el-table-column label="员工编号" prop="userID" />
-      <el-table-column label="值班日期" prop="date" />
-      <el-table-column label="值班地点" prop="place" />
+      <el-table-column label="员工编号" prop="userid" />
+      <el-table-column label="值班日期" prop="dutyDate" />
+      <el-table-column label="值班地点" prop="dutyPlace" />
       <el-table-column label="值班开始时间" prop="startTime" />
       <el-table-column label="值班结束时间" prop="endTime" />
       <el-table-column align="right">
@@ -61,18 +60,13 @@
     >
       <el-form :model="form">
         <el-form-item label="人员ID" :label-width="formLabelWidth">
-          <el-input v-model="form.userID" />
+          <el-input v-model="form.userid" />
         </el-form-item>
         <el-form-item label="值班日期" :label-width="formLabelWidth">
-          <el-date-picker
-            v-model="form.date"
-            type="date"
-            placeholder="Pick a date"
-            style="width: 100%"
-          />
+          <el-input v-model="form.dutyDate" />
         </el-form-item>
         <el-form-item label="值班地点" :label-width="formLabelWidth">
-          <el-select v-model="form.place" placeholder="请输入值班地点">
+          <el-select v-model="form.dutyPlace" placeholder="请输入值班地点">
             <el-option label="A区" value="A区" />
             <el-option label="B区" value="B区" />
             <el-option label="C区" value="C区" />
@@ -80,24 +74,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="开始时间" :label-width="formLabelWidth">
-          <el-time-picker
-            v-model="form.startTime"
-            placeholder="请选择开始时间"
-            style="width: 100%"
-          />
+          <el-input v-model="form.startTime" />
         </el-form-item>
         <el-form-item label="结束时间" :label-width="formLabelWidth">
-          <el-time-picker
-            v-model="form.endTime"
-            placeholder="请选择结束时间"
-            style="width: 100%"
-          />
+          <el-input v-model="form.endTime" />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false"
+          <el-button type="primary" @click="(dialogFormVisible = false),addDutySchedule()"
             >确认</el-button
           >
         </span>
@@ -111,18 +97,13 @@
     >
       <el-form :model="form">
         <el-form-item label="人员ID" :label-width="formLabelWidth">
-          <el-input v-model="form.userID" />
+          <el-input v-model="form.userid" />
         </el-form-item>
         <el-form-item label="值班日期" :label-width="formLabelWidth">
-          <el-date-picker
-            v-model="form.date"
-            type="date"
-            placeholder="Pick a date"
-            style="width: 100%"
-          />
+          <el-input v-model="form.dutyDate" />
         </el-form-item>
         <el-form-item label="值班地点" :label-width="formLabelWidth">
-          <el-select v-model="form.place" placeholder="请输入值班地点">
+          <el-select v-model="form.dutyPlace" placeholder="请输入值班地点">
             <el-option label="A区" value="A区" />
             <el-option label="B区" value="B区" />
             <el-option label="C区" value="C区" />
@@ -130,24 +111,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="开始时间" :label-width="formLabelWidth">
-          <el-time-picker
-            v-model="form.startTime"
-            placeholder="请选择开始时间"
-            style="width: 100%"
-          />
+          <el-input v-model="form.startTime" />
         </el-form-item>
         <el-form-item label="结束时间" :label-width="formLabelWidth">
-          <el-time-picker
-            v-model="form.endTime"
-            placeholder="请选择结束时间"
-            style="width: 100%"
-          />
+          <el-input v-model="form.endTime" />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible1 = false">取消</el-button>
-          <el-button type="primary" @click="dialogFormVisible1 = false"
+          <el-button type="primary" @click="(dialogFormVisible1 = false),editDutySchedule()"
             >确认</el-button
           >
         </span>
@@ -170,6 +143,7 @@
   </div>
 </template>
 <script>
+import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
@@ -181,27 +155,16 @@ export default {
       dialogFormVisible: false, //添加对话框显示与否
       dialogFormVisible1: false, //修改对话框显示与否
       form: {
-        userID: "",
-        date: "",
-        place: "",
+        userid: "",
+        dutyDate: "",
+        dutyPlace: "",
         startTime: "",
         endTime: "",
       },
     };
   },
   created() {
-    this.axios
-      .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/dutySchedule/list?pageNum=" +
-          this.pageNum +
-          "&pageSize=" +
-          this.pageSize
-      )
-      .then((res) => {
-        console.log(res.data);
-        this.total = res.data.data.total;
-        this.dutyPlan = res.data.data.list;
-      });
+    this.getDutyScheduleList(this.pageNum,this.pageSize,this.keyword)
   },
   methods: {
     add() {
@@ -213,23 +176,80 @@ export default {
         endTime: "",
       };
     },
+    //添加新纪录
+    addDutySchedule(){
+      this.axios.post("http://127.0.0.1/dutySchedule/newDutySchedule",this.form)
+      .then(res=>{
+        if(res.data){
+          ElMessage({
+            message:"添加成功",
+            type:"success"
+          })
+          this.getDutyScheduleList(this.pageNum,this.pageSize,this.keyword)
+        }
+      })
+    },
     handleEdit(index, row) {
       console.log(index, row);
       this.form = row;
     },
+    editDutySchedule(){
+      this.axios.put("http://127.0.0.1/dutySchedule/modification",this.form)
+      .then(res=>{
+        if(res.data){
+          ElMessage({
+            message:"修改成功",
+            type:"success"
+          })
+          this.getDutyScheduleList(this.pageNum,this.pageSize,this.keyword)
+        }
+      })
+    },
     handleDelete(index, row) {
       console.log(index, row);
+      this.axios.delete("http://127.0.0.1/dutySchedule/?id="+row.id)
+      .then(res=>{
+        console.log(res);
+        if(res.data){
+          ElMessage({
+            message:"删除成功",
+            type:"success"
+          })
+          this.getDutyScheduleList(this.pageNum,this.pageSize,this.keyword)
+        }
+      })
     },
     //每页页数变化
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;
+      this.getDutyScheduleList(this.pageNum,this.pageSize,this.keyword)
     },
     //切换页数
     handleCurrentChange(val) {
       console.log(`当前页 ${val}条`);
       this.pageNum = val;
+      this.getDutyScheduleList(this.pageNum,this.pageSize,this.keyword)
     },
+    //获取值班表
+    getDutyScheduleList(pageNum,pageSize,keyword){
+      this.axios.get("http://127.0.0.1/dutySchedule/list?pageNum=" +
+          pageNum +
+          "&pageSize=" +
+          pageSize+
+          "&str"+
+          keyword)
+          .then(res=>{
+            if(res.data.code==200){
+              console.log(res);
+              this.dutyPlan=res.data.data.list
+            }
+          })
+    },
+    //关键词搜索
+    toSearch(){
+      this.getDutyScheduleList(this.pageNum,this.pageSize,this.keyword)
+    }
   },
 };
 </script>

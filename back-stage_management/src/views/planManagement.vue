@@ -58,7 +58,7 @@
           style="max-width: 100%"
         >
           <el-form-item label="名称">
-            <el-input v-model="plan.name" />
+            <el-input v-model="plan.title" />
           </el-form-item>
           <el-form-item label="预案类型">
             <el-input v-model="plan.category" />
@@ -78,7 +78,7 @@
         <div style="display: flex; justify-content: center">
           <el-button
             type="primary"
-            @click="selectPlan,(dialogFormVisible = false)"
+            @click="addPlan(),(dialogFormVisible = false)"
             plain
             style="margin: 10px"
             >添加</el-button
@@ -118,7 +118,7 @@
         <div style="display: flex; justify-content: center">
           <el-button
             type="primary"
-            @click="selectPlan,(dialogFormVisible1 = false)"
+            @click="editPlan(),(dialogFormVisible1 = false)"
             plain
             style="margin: 10px"
             >修改</el-button
@@ -143,6 +143,7 @@
   </div>
 </template>
 <script>
+import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
@@ -159,38 +160,29 @@ export default {
         author: "",
         content: "",
       },
+      planId:null,//用于删除
     };
   },
   created() {
-    this.axios
-      .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/plans?pageNum=" +
-          this.pageNum +
-          "&pageSize=" +
-          this.pageSize +
-          "&status=" +
-          "待处理"
-      )
-      .then((res) => {
-        console.log(res);
-        this.plans = res.data.data.list;
-        this.total = res.data.data.total;
-      });
+    this.getPlanList(this.pageNum,this.pageSize,this.keyword)
   },
   methods: {
     //每页页数变化
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;
+      this.getPlanList(this.pageNum,this.pageSize,this.keyword)
     },
     //切换页数
     handleCurrentChange(val) {
       console.log(`当前页 ${val}条`);
       this.pageNum = val;
+      this.getPlanList(this.pageNum,this.pageSize,this.keyword)
     },
     //通过关键词搜索
     toSearch() {
       console.log("点击了搜索");
+      this.getPlanList(this.pageNum,this.pageSize,this.keyword)
     },
     add(){
       this.plan={
@@ -200,10 +192,62 @@ export default {
         content: "",
       }
     },
+    addPlan(){
+      this.axios.post("http://127.0.0.1/plan/",this.plan)
+      .then(res=>{
+        if(res.data.code==200){
+          ElMessage({
+          message:"添加成功",
+          type:"success"
+        })
+        this.getPlanList(this.pageNum,this.pageSize,this.keyword)
+        }
+      })
+    },
     handleEdit(index,row) {
       this.plan=row;
     },
-    handleDelete() {},
+    //修改
+    editPlan(){
+      this.axios.put("http://127.0.0.1/plan/",this.plan)
+      .then(res=>{
+        console.log(res);
+        if(res.data.code==200){
+          ElMessage({
+          message:"修改成功",
+          type:"success"
+        })
+        this.getPlanList(this.pageNum,this.pageSize,this.keyword)
+        }
+      })
+    },
+    handleDelete(index,row) {
+      this.planId=row.id
+      this.axios.delete("http://127.0.0.1/plan/"+this.planId)
+      .then(res=>{
+        if(res.data.code==204){
+          ElMessage({
+          message:"删除成功",
+          type:"success"
+        })
+        this.getPlanList(this.pageNum,this.pageSize,this.keyword)
+        }
+      })
+    },
+    //获取预案列表
+    getPlanList(pageNum,pageSize,keyword){
+      this.axios.get("http://127.0.0.1/plan/list?pageNum=" +
+          pageNum +
+          "&pageSize=" +
+          pageSize+
+          "&keywords"+
+          keyword)
+          .then(res=>{
+            console.log(res);
+            this.plans=res.data.data.list
+          })
+
+    }
   },
 };
 </script>

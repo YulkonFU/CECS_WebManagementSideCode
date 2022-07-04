@@ -49,7 +49,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false"
+          <el-button type="primary" @click="(dialogFormVisible = false),postSupply()"
             >确认</el-button
           >
         </span>
@@ -76,7 +76,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible1 = false">取消</el-button>
-          <el-button type="primary" @click="dialogFormVisible1 = false"
+          <el-button type="primary" @click="(dialogFormVisible1 = false),editSupply()"
             >确认</el-button
           >
         </span>
@@ -99,6 +99,7 @@
   </div>
 </template>
 <script>
+import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
@@ -116,18 +117,7 @@ export default {
     };
   },
   created() {
-    this.axios
-      .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/supply?pageNum=" +
-          this.pageNum +
-          "&pageSize=" +
-          this.pageSize
-      )
-      .then((res) => {
-        console.log(res.data);
-        this.total = res.data.data.total;
-        this.source = res.data.data.list;
-      });
+    this.getResourceList(this.pageNum,this.pageSize)
   },
   methods: {
     //添加
@@ -138,25 +128,74 @@ export default {
         inventory: null,
       }
     },
+    //发送添加资源请求
+    postSupply(){
+      this.axios.post("http://127.0.0.1/supply/",this.form)
+      .then(res=>{
+        console.log(res);
+        if(res.data.code==200){
+          ElMessage({
+            message:"添加成功",
+            type:"success"
+          })
+          this.getResourceList(this.pageNum,this.pageSize)
+        }
+      })
+    },
     //修改
     handleEdit(index, row) {
       console.log(index, row);
       this.form=row;
     },
+    //确认修改
+    editSupply(){
+      this.axios.put("http://127.0.0.1/supply/",this.form)
+      .then(res=>{
+        if(res.data.code==200){
+          ElMessage({
+            message:"修改成功",
+            type:"success"
+          })
+          this.getResourceList(this.pageNum,this.pageSize)
+        }
+      })
+    },
     //删除
     handleDelete(index, row) {
       console.log(index, row);
+      this.axios.delete("http://127.0.0.1/supply/"+row.id)
+      .then(res=>{
+        console.log(res);
+        if(res.data.code==204){
+          ElMessage({
+            message:"删除成功",
+            type:"success"
+          })
+          this.getResourceList(this.pageNum,this.pageSize)
+        }
+      })
     },
     //每页页数变化
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;
+      this.getResourceList(this.pageNum,this.pageSize)
     },
     //切换页数
     handleCurrentChange(val) {
       console.log(`当前页 ${val}条`);
       this.pageNum = val;
+      this.getResourceList(this.pageNum,this.pageSize)
     },
+    //获取资源列表
+    getResourceList(pageNum,pageSize){
+      this.axios.get("http://127.0.0.1/supply/list?pageNum="+ pageNum +"&pageSize=" +pageSize)
+      .then(res=>{
+        console.log(res.data.data);
+        this.source=res.data.data.list;
+        this.total=res.data.data.total
+      })
+    }
   },
 };
 </script>

@@ -49,7 +49,17 @@
 import * as echarts from "echarts";
 export default {
   data() {
-    return {};
+    return {
+      pieChartData:[],//饼图数据
+    };
+  },
+  created(){
+    //获取饼图数据
+    this.axios.get("http://127.0.0.1/panel/times")
+    .then(res=>{
+      console.log(res.data.data);
+      this.pieChartData=res.data.data
+    })
   },
   mounted() {
     this.pieChart();
@@ -96,8 +106,6 @@ export default {
               { value: 15, name: "火灾" },
               { value: 2, name: "爆炸" },
               { value: 20, name: "治安" },
-              { value: 30, name: "设备故障" },
-              { value: 30, name: "自然灾害" },
             ],
             emphasis: {
               itemStyle: {
@@ -141,7 +149,7 @@ export default {
         legend: {
           show: true,
           top: "6%", //与上方的距离 可百分比% 可像素px
-          data: ["泄露", "火灾", "爆炸", "中毒", "治安", "设备故障"],
+          data: ["泄露", "火灾", "爆炸", "治安"],
         },
         grid: {
           left: "3%",
@@ -182,22 +190,10 @@ export default {
             data: [0, 0, 0, 0, 0, 1, 0],
           },
           {
-            name: "中毒",
-            type: "line",
-            stack: "Total",
-            data: [0, 0, 0, 0, 1, 1, 0],
-          },
-          {
             name: "治安",
             type: "line",
             stack: "Total",
             data: [10, 9, 2, 7, 3, 4, 3],
-          },
-          {
-            name: "设备故障",
-            type: "line",
-            stack: "Total",
-            data: [20, 15, 2, 10, 3, 5, 7],
           },
         ],
       },true);

@@ -1,12 +1,6 @@
 <template>
   <div>
     <div class="mt-4" style="display:flex;justify-content: space-between;">
-        <el-date-picker
-          v-model="form.date"
-          type="date"
-          placeholder="Pick a date"
-          style="width: 30%;padding-left:0px;"
-        />
       <el-input
         style="width:50%"
         @keydown.enter="toSearch"
@@ -26,9 +20,9 @@
     </div>
     <el-table :data="dutyLog" style="width: 100%">
       <el-table-column label="编号" prop="id" />
-      <el-table-column label="员工id" prop="userID" />
+      <el-table-column label="员工id" prop="userId" />
       <el-table-column label="登记日期" prop="registrationTime" />
-      <el-table-column label="值班表id" prop="scheduleID" />
+      <el-table-column label="值班表id" prop="scheduleId" />
       <el-table-column label="日志内容" prop="logResult" />
     </el-table>
     <!-- 分页 -->
@@ -69,18 +63,7 @@ export default {
     };
   },
   created() {
-    this.axios
-      .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/dutyLog/list?pageNum=" +
-          this.pageNum +
-          "&pageSize=" +
-          this.pageSize
-      )
-      .then((res) => {
-        console.log(res.data);
-        this.total = res.data.data.total;
-        this.dutyLog = res.data.data.list;
-      });
+    this.getDutyLogList(this.pageNum,this.pageSize,this.keyword)
   },
   methods: {
     handleEdit(index, row) {
@@ -93,12 +76,27 @@ export default {
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;
+      this.getDutyLogList(this.pageNum,this.pageSize,this.keyword)
     },
     //切换页数
     handleCurrentChange(val) {
       console.log(`当前页 ${val}条`);
       this.pageNum = val;
+      this.getDutyLogList(this.pageNum,this.pageSize,this.keyword)
     },
+    //获取日志列表
+    getDutyLogList(pageNum,pageSize,keyword){
+      this.axios.get("http://127.0.0.1/dutyLog/list?pageNum="+ pageNum +"&pageSize=" +pageSize+"&str="+keyword)
+      .then(res=>{
+        console.log(res);
+        this.dutyLog=res.data.data.list;
+        this.total=res.data.data.total;
+      })
+    },
+    //关键词查询
+    toSearch(){
+      this.getDutyLogList(this.pageNum,this.pageSize,this.keyword)
+    }
   },
 };
 </script>

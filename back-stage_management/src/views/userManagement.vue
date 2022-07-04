@@ -278,7 +278,6 @@ export default {
     },
     handleDelete(index, row) {
       let user=JSON.parse(JSON.stringify(row))
-      console.log(user);
       this.axios.delete("http://127.0.0.1/users/"+user.id)
       .then(res=>{
         console.log(res);

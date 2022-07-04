@@ -18,7 +18,7 @@
       </el-input>
     </div>
     <el-table :data="event" style="width: 100%">
-      <el-table-column label="事件编号" prop="id" width="80px" />
+      <el-table-column label="事件编号" prop="eventId" width="80px" />
       <el-table-column label="事件类型" prop="type" width="80px" />
       <el-table-column label="事发时间" prop="startTime" />
       <el-table-column label="结束时间" prop="endTime" />
@@ -32,7 +32,6 @@
       <el-table-column label="上报人" prop="reporter" width="80px" />
       <el-table-column label="状态" prop="status" width="80px" />
       <el-table-column label="执行人" prop="commander" width="80px" />
-      <el-table-column label="流程id" prop="processId" width="80px" />
       <el-table-column label="操作">
         <template #default="scope">
           <div style="display: flex; justify-content: center">
@@ -50,9 +49,9 @@
         title="终止原因"
         append-to-body="true"
       >
-        <el-select v-model="value" class="m-2" placeholder="已解决" >
-          <el-option label="已解决" value="已解决" />
-          <el-option label="无法解决" value="无法解决" />
+        <el-select v-model="value" class="m-2" placeholder="选择状态" >
+          <el-option label="已解决" value=3 />
+          <el-option label="无法解决" value=4 />
         </el-select>
         <el-input
         style="margin-top:10px"
@@ -97,27 +96,16 @@ export default {
       pageSize: 10, //用户请求的数据每一页多少条数据
       total: 0, //总条数
       keyword: "", //用户进行搜索的关键词
+      status:"",//事件状态
       dialogTableVisible: false, //控制弹出框的显示与隐藏
-      value: "已解决", //选择的事件终止状态
+      eventId:null,//事件id
+      value: null, //选择的事件终止状态
       reason:"",//事件终止的原因
       event: [],
     };
   },
   created() {
-    this.axios
-      .get(
-        "http://127.0.0.1:4523/m1/1171870-0-default/event/list?pageNum=" +
-          this.pageNum +
-          "&pageSize=" +
-          this.pageSize +
-          "&status=" +
-          "待处理"
-      )
-      .then((res) => {
-        console.log(res);
-        this.event = res.data.data.list;
-        this.total = res.data.data.total;
-      });
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
   },
   methods: {
     //用于执行预案
@@ -126,24 +114,68 @@ export default {
     handleSizeChange(val) {
       console.log(`每页 ${val}条`);
       this.pageSize = val;
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
     },
     //切换页数
     handleCurrentChange(val) {
       console.log(`当前页 ${val}条`);
       this.pageNum = val;
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
     },
     //通过关键词搜索
     toSearch() {
-      console.log("点击了搜索");
+      this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
     },
     //终止
     termination(index, row) {
       console.log(index, row);
+      this.eventId=row.eventId
       this.dialogTableVisible = true;
+    },
+    //点击终止确认
+    commit(){
+      // this.axios.put("http://127.0.0.1/events/terminate",{id:this.eventId,status:,reason:})
+      // .then(res=>{
+      //   console.log(res);
+      // })
+      var FormData = require('form-data');
+      var data = new FormData();
+      data.append('id',this.eventId)
+      data.append('status',Number(this.value))
+      data.append('reason',this.reason)
+      this.axios.request({
+        method:"put",
+        url:"http://127.0.0.1/events/terminate",
+        data:data,
+        headers:{
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
+      .then(res=>{
+        console.log(res);
+        if(res.data.code==200){
+          ElMessage({
+            message:"终止成功",
+            type:"success"
+          })
+          this.dialogTableVisible=false;
+          this.getEventList(this.pageNum,this.pageSize,this.keyword,this.status)
+        }
+      })
     },
     //重置
     rest(){
       this.reason=""
+    },
+    //查找事件列表
+    getEventList(pageNum,pageSize,keyword,status){
+      this.axios.get("http://127.0.0.1/events/list?pageNum="+ pageNum +"&pageSize=" +pageSize +"&keywords=" +keyword
+      +"&status="+status)
+      .then(res=>{
+        console.log(res);
+        this.event=res.data.data.list;
+        this.total=res.data.data.total
+      })
     }
   },
 };
