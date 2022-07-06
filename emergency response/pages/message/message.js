@@ -6,7 +6,7 @@ Page({
    */
   data: {
     active:0,
-    content:'',
+    content:'1、启动警报广播通知园区公众 2、根据是否响应升级作出后续指挥调度',
   },
   onLoad(){
     
@@ -15,7 +15,7 @@ Page({
       key: 'event_content',
       success(res){
         that.setData({
-          content: res.data,
+          // content: res.data,
         })
       }
     })

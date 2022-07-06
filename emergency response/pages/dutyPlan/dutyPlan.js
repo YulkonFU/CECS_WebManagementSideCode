@@ -14,7 +14,7 @@ Page({
     var user = wx.getStorageSync('user');
     this.setData({user:user})
     request({
-      url: '/dutySchedule/{id}',
+      url: '/weixin/dutySchedule/currentSchedule',
       method: 'GET',
       data: {id:user.data.id}
     }).then(res => {

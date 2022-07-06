@@ -1,6 +1,7 @@
 // pages/submitting/submitting.js
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
 import { request } from '../../request/index'
+var util = require('../../utils/util.js');
 Page({
 
   /**
@@ -25,6 +26,13 @@ Page({
     startTime:'',
     location:'',
     description:'',
+    startTime:'',
+  },
+  onLoad(){
+    var time = util.formatTime(new Date());
+    this.setData({
+      startTime: time
+    });
   },
   true1(){
     var user = wx.getStorageSync('user');
@@ -33,46 +41,24 @@ Page({
       reporter: user.data.id,
       type: this.data.value1,
       location: this.data.location,
-      start_time: this.data.startTime,
+      startTime: this.data.startTime,
       description: this.data.description,
       level:this.data.value2,
       status: 0,
     } ;
     console.log(data);
     request({
-      url: '/event/new',
+      url: '/weixin/event/newEvent',
       method: 'POST',
-      data: {data}
+      data: data,
+      headers: {//设置请求头
+        'content-Type': 'application/json',
+        token: wx.getStorageSync('token'),
+        },
     }).then(res => {
       this.data.show=true;
       Dialog.alert({
         message: '上报成功',
-        theme: 'round-button',
-      }).then(() => {
-        })
-    });
-  },
-  true2(){
-    var user = wx.getStorageSync('user');
-    this.setData({user:user})
-    let data = {
-      reporter: user.data.id,
-      type: this.data.value1,
-      location: this.data.location,
-      start_time: this.data.startTime,
-      description: this.data.description,
-      level:this.data.value2,
-      status: 2,
-    } ;
-    console.log(data);
-    request({
-      url: '/event/new',
-      method: 'POST',
-      data: {data}
-    }).then(res => {
-      this.data.show=true;
-      Dialog.alert({
-        message: '响应升级',
         theme: 'round-button',
       }).then(() => {
         })

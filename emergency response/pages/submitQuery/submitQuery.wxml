@@ -3,14 +3,16 @@
   <view style="margin: 10rpx 0;">
     <van-divider hairline="true" contentPosition="center" borderColor="green">上报查询</van-divider>
   </view>
-  <view wx:for="event" wx:key="{{event.id}}" >
+  <view wx:for="{{event}}" wx:key="index" wx:for-item="e">
     <van-cell-group inset>
-      <van-cell title="危机类型" value="{{event.type}}"/>
-      <van-cell title="危机程度" value="{{event.level}}"/>
-      <van-cell title="事件状态" value="{{event.status}}"/>
-      <van-cell title="事件处理时间" value="{{event.startTime}}"/>
-      <van-cell title="事件终止时间" value="{{event.endTime}}"/>
-      <van-cell title="事件发生地点" value="{{event.location}}"/>
+      <van-button type="danger"data-id="{{e.eventId}}" bind:click="upgrade">响应升级</van-button>
+      <van-cell title="危机类型" value="{{e.type}}"/>
+      <van-cell title="危机程度" value="{{e.level}}"/>
+      <van-cell title="事件状态" value="{{e.status}}"/>
+      <van-cell title="事件处理时间" value="{{e.startTime}}"/>
+      <van-cell title="事件终止时间" value="{{e.endTime}}"/>
+      <van-cell title="事件发生地点" value="{{e.location}}"/>
+      <van-dialog id="van-dialog" />
     </van-cell-group>
     <van-divider dashed  borderColor="green"/>
   </view>

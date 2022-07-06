@@ -24,7 +24,7 @@
         },
         {
           "name": "上报管理",
-          "pathName": "pages/submit/submit",
+          "pathName": "pages/submitting/submitting",
           "query": "",
           "launchMode": "default",
           "scene": null

@@ -1,5 +1,6 @@
 // pages/dutyLeave/dutyLeave.js
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
+import { request } from '../../request/index'
 Page({
 
   /**
@@ -12,6 +13,7 @@ Page({
     endTime:'',
     date:'',
     show1:'',
+    reason:'',
   },
   leave(){
     this.setData({ show1: true });
@@ -53,14 +55,30 @@ Page({
     }
   },
   true(){
-    this.data.show=true;
-    Dialog.alert({
-      message: '请假成功',
-      theme: 'round-button',
-    }).then(() => {
-      // on close
+    var user = wx.getStorageSync('user');
+    let data = {
+      applicant:8,
+      leaveDate:this.data.date,
+      startTime:this.data.startTime,
+      endTime:this.data.endTime,
+      leaveMatter:this.data.reason,
     }
-    );
+    request({
+      url: '/weixin/leave/application',
+      method: 'POST',
+      data: data,
+      headers: {//设置请求头
+        'content-Type': 'application/json',
+        token: wx.getStorageSync('token'),
+        },
+    }).then(res => {
+      this.data.show=true;
+      Dialog.alert({
+        message: '提交成功',
+        theme: 'round-button',
+      }).then(() => {
+        })
+    });
   },
   chat(){
     wx.redirectTo({

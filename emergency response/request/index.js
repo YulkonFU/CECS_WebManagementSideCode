@@ -8,12 +8,12 @@ export const request = (params) => {
   })
   
   // 后台的请求地址，记得修改成你自己的地址
-  const baseUrl = 'https://mock.apifox.cn/m1/1171870-0-default';
+  const baseUrl = 'http://nat.ckxgzxa.top:33308';
   
   return new Promise((resolve, reject) => {
     wx.request({
       ...params,
-      url: baseUrl + params.url,
+      url:  baseUrl+params.url,
       success: (result) => {
         resolve(result.data);
       },

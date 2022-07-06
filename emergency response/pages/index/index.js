@@ -16,10 +16,15 @@ Page({
   //   });
   // },
   onLoad(){
+    console.log(wx.getStorageSync('token'))
       request({
-        url: '/events/list',
+        url: '/weixin/event/',
         method: 'GET',
-        data: {}
+        data: {},
+        headers: {//设置请求头
+          'content-Type': 'application/json',
+          token: wx.getStorageSync('token'),
+          },
       }).then(res => {
         console.log(res);
         wx.setStorageSync('event', res);

@@ -15,22 +15,30 @@ Page({
       request({
         url: '/auth/user/login',
         method: 'POST',
-        data: data
+        data: data,
+        header: {
+          'content-type': 'application/x-www-form-urlencoded'//修改为formdata
+          },
       }).then(res => {
-        // 接下来，问题就变得非常简单了
+        // 获取用户信息
         if (res) {
           wx.showToast({
             title: '登录成功',
             icon: 'succcess'
           })
+          console.log(res);
           let id = res.data.id;
+          let token = res.data.token;
+          wx.setStorageSync('token', token);
+          wx.setStorageSync('token', token);
           request({
-            url: '/users/{id}',
+            url: '/weixin/user/personalInformation',
             method: 'GET',
-            data: {id:id}
+            data: {userId:id}
           }).then(res => {
             console.log(res);
             wx.setStorageSync('user', res);
+            // wx.setStorageSync('token', token)
           })
           setTimeout(() => {
             wx.navigateTo({

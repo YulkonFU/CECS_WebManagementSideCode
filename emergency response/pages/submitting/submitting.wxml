@@ -14,11 +14,8 @@
     <van-field label="情况描述" model:value="{{ description }}"placeholder="请详细描述问题"bind:blur="check2" autosize border="{{ false }}" type="textarea"/>
   </van-cell-group>
   <view style="text-align: center;margin-top: 50px;">
-    <van-row>
-      <van-col span="12"><van-button type="warning" bind:click="true1">确认上报</van-button></van-col>
-      <van-col span="12"><van-button type="danger" bind:click="true2">响应升级</van-button></van-col>
-      <van-dialog show="{{ show }}"  id="van-dialog" />
-    </van-row>
+    <van-button type="warning" bind:click="true1">确认上报</van-button>
+    <van-dialog show="{{ show }}"  id="van-dialog" /> 
   </view>
   </view>
   
